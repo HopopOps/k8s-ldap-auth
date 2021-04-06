@@ -67,8 +67,8 @@ install: hooks
 
 ## Install git hooks for post-checkout & pre-commit
 hooks:
-	@cp -f ./scripts/post-checkout .git/hooks
-	@cp -f ./scripts/pre-commit .git/hooks
+	@cp -f ./scripts/post-checkout .git/hooks/
+	@cp -f ./scripts/pre-commit .git/hooks/
 	@chmod +x .git/hooks/post-checkout
 	@chmod +x .git/hooks/pre-commit
 

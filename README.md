@@ -1,7 +1,7 @@
 # k8s-ldap-auth
 
 ## What
-This is a webhook token authentication plugin implementation for ldap backend heavily inspired from Daniel Weibel article and own implementation in "Implementing LDAP authentication for Kubernetes" at https://itnext.io/implementing-ldap-authentication-for-kubernetes-732178ec2155
+This is a webhook token authentication plugin implementation for ldap backend inspired from Daniel Weibel article "Implementing LDAP authentication for Kubernetes" at https://itnext.io/implementing-ldap-authentication-for-kubernetes-732178ec2155
 
 k8s-ldap-auth is actually providing authentication with a token such as `base64(username:password)`, populating v1.UserInfo with: 
 ```

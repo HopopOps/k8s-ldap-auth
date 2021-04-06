@@ -7,4 +7,5 @@ require (
 	github.com/urfave/cli/v2 v2.3.0
 	gopkg.in/asn1-ber.v1 v1.0.0-20181015200546-f715ec2f112d // indirect
 	k8s.io/api v0.20.4
+	github.com/gorilla/mux v1.8.0
 )

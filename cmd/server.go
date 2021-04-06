@@ -96,11 +96,27 @@ func getServerCmd() *cli.Command {
 				searchAttributes = c.StringSlice("search-attributes")
 				memberOfProperty = c.String("member-of-property")
 			)
-			//	return fmt.Errorf("There was an error starting the server, %w", err)
 
-			listen := server.Initialize(ldapURL, bindDN, bindPassword, searchBase, searchScope, searchFilter, memberOfProperty, searchAttributes)
+			addr := fmt.Sprintf("%s:%d", host, port)
 
-			return listen(fmt.Sprintf("%s:%d", host, port))
+			s := server.NewInstance(
+				server.WithLdap(
+					ldapURL,
+					bindDN,
+					bindPassword,
+					searchBase,
+					searchScope,
+					searchFilter,
+					memberOfProperty,
+					searchAttributes,
+				),
+				server.WithAccessLogs(),
+			)
+			if err := s.Start(addr); err != nil {
+				return fmt.Errorf("There was an error starting the server, %w", err)
+			}
+
+			return nil
 		},
 	}
 }
