@@ -8,7 +8,7 @@ import (
 	"github.com/gorilla/mux"
 
 	"bouchaud.org/legion/kubernetes/k8s-ldap-auth/ldap"
-	"bouchaud.org/legion/kubernetes/k8s-ldap-auth/types"
+	"bouchaud.org/legion/kubernetes/k8s-ldap-auth/server/types"
 )
 
 // ContentTypeHeader is the HTTP header name that contains the message content type
