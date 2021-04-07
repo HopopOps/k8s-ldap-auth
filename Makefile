@@ -29,7 +29,7 @@ BUILDTIME := $(shell date -u +"%FT%TZ%:z")
 ARCH := $(shell uname -m)
 TAG ?= $(GIT_TAG)
 
-.PHONY: fmt fmt-check vet test test-coverage cover install hooks docker tag push dev help
+.PHONY: fmt fmt-check vet test test-coverage cover install hooks docker tag push help clean
 default: help
 
 ## Format go source code
@@ -86,8 +86,12 @@ docker:
 		--tag $(ORG)/$(BIN):latest \
 		.
 
+## Clean artifacts
+clean:
+	rm -f $(BIN)
+
 ## Dev build outside of docker, not stripped
-dev:
+$(BIN):
 	$(GO) build \
 		-o $(BIN) -ldflags "\
 				-X $(PKG)/version.APPNAME=$(BIN) \
