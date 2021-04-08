@@ -29,7 +29,7 @@ BUILDTIME := $(shell date -u +"%FT%TZ%:z")
 ARCH := $(shell uname -m)
 TAG ?= $(GIT_TAG)
 
-.PHONY: fmt fmt-check vet test test-coverage cover install hooks docker tag push help clean
+.PHONY: fmt fmt-check vet test test-coverage cover install hooks docker tag push help clean dev
 default: help
 
 ## Format go source code
@@ -90,7 +90,6 @@ docker:
 clean:
 	rm -f $(BIN)
 
-## Dev build outside of docker, not stripped
 $(BIN):
 	$(GO) build \
 		-o $(BIN) -ldflags "\
@@ -99,6 +98,9 @@ $(BIN):
 				-X $(PKG)/version.GOVERSION=$(GOVERSION) \
 				-X $(PKG)/version.BUILDTIME=$(BUILDTIME) \
 				-X $(PKG)/version.COMMITHASH=$(GIT_COMMIT)"
+
+## Dev build outside of docker, not stripped
+dev: $(BIN)
 
 ## Print this help message
 help:
