@@ -60,28 +60,6 @@ func writeError(res http.ResponseWriter, s *ServerError) {
 	res.Write([]byte(s.e.Error()))
 }
 
-func contains(s []string, str string) bool {
-	for _, v := range s {
-		if v == str {
-			return true
-		}
-	}
-
-	return false
-}
-
-func intersect(a []string, b []string) []string {
-	set := []string{}
-
-	for _, v := range a {
-		if contains(b, v) {
-			set = append(set, v)
-		}
-	}
-
-	return set
-}
-
 func (s *Instance) authenticate() http.HandlerFunc {
 	return func(res http.ResponseWriter, req *http.Request) {
 		if req.Header.Get(ContentTypeHeader) != ContentTypeJSON {
@@ -121,7 +99,6 @@ func (s *Instance) authenticate() http.HandlerFunc {
 			return
 		}
 
-		// TODO: not sure we should be instanciating a TokenReview here
 		ec := client.ExecCredential{
 			Status: &client.ExecCredentialStatus{
 				Token: string(tokenData),
@@ -156,11 +133,6 @@ func (s *Instance) validate() http.HandlerFunc {
 			writeError(res, ErrMalformedToken)
 			return
 		}
-
-		// if len(intersect(token.Groups, config.Groups)) == 0 && contains(config.Groups, user.DN) == false {
-		//		writeError(res, ErrForbidden)
-		//		return
-		// }
 
 		if token.IsValid() == false {
 			tr.Status.Authenticated = false
