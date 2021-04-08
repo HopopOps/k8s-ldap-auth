@@ -99,7 +99,7 @@ func getServerCmd() *cli.Command {
 
 			addr := fmt.Sprintf("%s:%d", host, port)
 
-			s := server.NewInstance(
+			s, err := server.NewInstance(
 				server.WithLdap(
 					ldapURL,
 					bindDN,
@@ -112,6 +112,10 @@ func getServerCmd() *cli.Command {
 				),
 				server.WithAccessLogs(),
 			)
+			if err != nil {
+				return fmt.Errorf("There was an error instanciation the server, %w", err)
+			}
+
 			if err := s.Start(addr); err != nil {
 				return fmt.Errorf("There was an error starting the server, %w", err)
 			}

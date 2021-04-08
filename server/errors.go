@@ -11,39 +11,38 @@ type ServerError struct {
 }
 
 var (
-	// ErrMethodNotAllowed means that the request method is not allowed on this route
-	ErrMethodNotAllowed = &ServerError{
-		e: errors.New("method not allowed"),
-		s: http.StatusMethodNotAllowed,
+	ErrServerError = &ServerError{
+		e: errors.New(http.StatusText(http.StatusInternalServerError)),
+		s: http.StatusInternalServerError,
 	}
 	// ErrNotAcceptable means that the request is not acceptable because of it's content-type, language or encoding
 	ErrNotAcceptable = &ServerError{
-		e: errors.New("not acceptable"),
+		e: errors.New(http.StatusText(http.StatusNotAcceptable)),
 		s: http.StatusNotAcceptable,
 	}
 	// ErrDecodeFailed means the request body could not be decoded
 	ErrDecodeFailed = &ServerError{
-		e: errors.New("failed decoding request body"),
+		e: errors.New("Failed Decoding Request Body"),
 		s: http.StatusBadRequest,
 	}
 	// ErrMalformedCredentials
 	ErrMalformedCredentials = &ServerError{
-		e: errors.New("malformed credential object"),
+		e: errors.New("Malformed Credential Object"),
 		s: http.StatusBadRequest,
 	}
 	// ErrMalformedToken
 	ErrMalformedToken = &ServerError{
-		e: errors.New("malformed token object"),
+		e: errors.New("Malformed Token Object"),
 		s: http.StatusBadRequest,
 	}
 	// ErrUnauthorized
 	ErrUnauthorized = &ServerError{
-		e: errors.New("unauthorized"),
+		e: errors.New(http.StatusText(http.StatusUnauthorized)),
 		s: http.StatusUnauthorized,
 	}
 	// ErrForbidden
 	ErrForbidden = &ServerError{
-		e: errors.New("forbidden"),
+		e: errors.New(http.StatusText(http.StatusForbidden)),
 		s: http.StatusForbidden,
 	}
 )

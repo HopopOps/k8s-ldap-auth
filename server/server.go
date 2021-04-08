@@ -1,31 +1,39 @@
 package server
 
 import (
+	"crypto/rsa"
 	"encoding/json"
 	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
 
+	auth "k8s.io/api/authentication/v1"
+	machinery "k8s.io/apimachinery/pkg/apis/meta/v1"
+	client "k8s.io/client-go/pkg/apis/clientauthentication/v1beta1"
+
 	"bouchaud.org/legion/kubernetes/k8s-ldap-auth/ldap"
 	"bouchaud.org/legion/kubernetes/k8s-ldap-auth/server/types"
 )
 
-// ContentTypeHeader is the HTTP header name that contains the message content type
 const ContentTypeHeader = "Content-Type"
-
-// ContentTypeJSON is the content type header value for JSON content
 const ContentTypeJSON = "application/json"
 
-// Instance for managing pipelines with HTTP
 type Instance struct {
 	l *ldap.Ldap
 	m []mux.MiddlewareFunc
+	k *rsa.PrivateKey
 }
 
-func NewInstance(opts ...Option) *Instance {
+func NewInstance(opts ...Option) (*Instance, error) {
+	key, err := types.Key()
+	if err != nil {
+		return nil, err
+	}
+
 	s := &Instance{
 		m: []mux.MiddlewareFunc{},
+		k: key,
 	}
 
 	r := mux.NewRouter()
@@ -36,7 +44,7 @@ func NewInstance(opts ...Option) *Instance {
 
 	http.Handle("/", r)
 
-	return s
+	return s, nil
 }
 
 func (s *Instance) Start(addr string) error {
@@ -50,7 +58,28 @@ func (s *Instance) Start(addr string) error {
 func writeError(res http.ResponseWriter, s *ServerError) {
 	res.WriteHeader(s.s)
 	res.Write([]byte(s.e.Error()))
+}
 
+func contains(s []string, str string) bool {
+	for _, v := range s {
+		if v == str {
+			return true
+		}
+	}
+
+	return false
+}
+
+func intersect(a []string, b []string) []string {
+	set := []string{}
+
+	for _, v := range a {
+		if contains(b, v) {
+			set = append(set, v)
+		}
+	}
+
+	return set
 }
 
 func (s *Instance) authenticate() http.HandlerFunc {
@@ -73,16 +102,37 @@ func (s *Instance) authenticate() http.HandlerFunc {
 			return
 		}
 
-		_, err := s.l.Search(credentials.Username, credentials.Password)
+		user, err := s.l.Search(credentials.Username, credentials.Password)
 		if err != nil {
 			writeError(res, ErrUnauthorized)
 			return
 		}
 
-		// TODO: implement
+		data, err := json.Marshal(user)
+		if err != nil {
+			writeError(res, ErrServerError)
+			return
+		}
+
+		token := types.NewToken(data)
+		tokenData, err := token.Payload(nil)
+		if err != nil {
+			writeError(res, ErrServerError)
+			return
+		}
+
+		// TODO: not sure we should be instanciating a TokenReview here
+		ec := client.ExecCredential{
+			Status: &client.ExecCredentialStatus{
+				Token: string(tokenData),
+				ExpirationTimestamp: &machinery.Time{
+					Time: token.Expiration(),
+				},
+			},
+		}
 
 		res.Header().Set(ContentTypeHeader, ContentTypeJSON)
-		json.NewEncoder(res).Encode(nil)
+		json.NewEncoder(res).Encode(ec)
 	}
 }
 
@@ -94,21 +144,36 @@ func (s *Instance) validate() http.HandlerFunc {
 		}
 
 		decoder := json.NewDecoder(req.Body)
-		var token types.Token
-		if err := decoder.Decode(&token); err != nil {
+		var tr auth.TokenReview
+		if err := decoder.Decode(&tr); err != nil {
 			writeError(res, ErrDecodeFailed)
 			return
 		}
 		defer req.Body.Close()
 
-		if !token.IsValid() {
+		token, err := types.Parse([]byte(tr.Spec.Token), nil)
+		if err != nil || token.IsValid() == false {
 			writeError(res, ErrMalformedToken)
 			return
 		}
 
-		// TODO: implement
+		// if len(intersect(token.Groups, config.Groups)) == 0 && contains(config.Groups, user.DN) == false {
+		//		writeError(res, ErrForbidden)
+		//		return
+		// }
+
+		if token.IsValid() == false {
+			tr.Status.Authenticated = false
+		} else {
+			tr.Status.Authenticated = true
+			tr.Status.User = auth.UserInfo{
+				Username: token.User(),
+				UID:      token.Uid(),
+				Groups:   token.Groups(),
+			}
+		}
 
 		res.Header().Set(ContentTypeHeader, ContentTypeJSON)
-		json.NewEncoder(res).Encode(nil)
+		json.NewEncoder(res).Encode(tr)
 	}
 }

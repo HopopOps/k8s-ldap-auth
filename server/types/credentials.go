@@ -6,6 +6,7 @@ type Credentials struct {
 	Password string
 }
 
-func (*Credentials) IsValid() bool {
-	return true // TODO: implement
+func (c *Credentials) IsValid( /* configuration */ ) bool {
+	// TODO: check if group exist in configuration
+	return len(c.Target) != 0 && len(c.Username) != 0 && len(c.Password) != 0
 }
