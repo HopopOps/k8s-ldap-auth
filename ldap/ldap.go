@@ -5,6 +5,8 @@ import (
 	"strings"
 
 	"github.com/go-ldap/ldap"
+
+	"bouchaud.org/legion/kubernetes/k8s-ldap-auth/types"
 )
 
 type Ldap struct {
@@ -18,7 +20,7 @@ type Ldap struct {
 	searchAttributes []string
 }
 
-func toLower(a []string) []string {
+func sanitize(a []string) []string {
 	var res []string
 
 	for _, item := range a {
@@ -42,7 +44,7 @@ func NewInstance(ldapURL, bindDN, bindPassword, searchBase, searchScope, searchF
 	return s
 }
 
-func (s *Ldap) Search(username, password string) (*User, error) {
+func (s *Ldap) Search(username, password string) (*types.User, error) {
 	l, err := ldap.DialURL(s.ldapURL)
 	if err != nil {
 		return nil, err
@@ -87,9 +89,9 @@ func (s *Ldap) Search(username, password string) (*User, error) {
 
 	// Rebinding as the read only user for any further queries is not necessary since the ldap connection will be closed.
 
-	return &User{
+	return &types.User{
 		Uid:    strings.ToLower(result.Entries[0].GetAttributeValue("uid")),
 		DN:     strings.ToLower(result.Entries[0].DN),
-		Groups: toLower(result.Entries[0].GetAttributeValues(s.memberOfProperty)),
+		Groups: sanitize(result.Entries[0].GetAttributeValues(s.memberOfProperty)),
 	}, nil
 }

@@ -13,7 +13,7 @@ import (
 	client "k8s.io/client-go/pkg/apis/clientauthentication/v1beta1"
 
 	"bouchaud.org/legion/kubernetes/k8s-ldap-auth/ldap"
-	"bouchaud.org/legion/kubernetes/k8s-ldap-auth/server/types"
+	"bouchaud.org/legion/kubernetes/k8s-ldap-auth/types"
 )
 
 const ContentTypeHeader = "Content-Type"
@@ -99,11 +99,17 @@ func (s *Instance) authenticate() http.HandlerFunc {
 			return
 		}
 
+		tokenExp, err := token.Expiration()
+		if err != nil {
+			writeError(res, ErrServerError)
+			return
+		}
+
 		ec := client.ExecCredential{
 			Status: &client.ExecCredentialStatus{
 				Token: string(tokenData),
 				ExpirationTimestamp: &machinery.Time{
-					Time: token.Expiration(),
+					Time: tokenExp,
 				},
 			},
 		}
@@ -129,7 +135,7 @@ func (s *Instance) validate() http.HandlerFunc {
 		defer req.Body.Close()
 
 		token, err := types.Parse([]byte(tr.Spec.Token), nil)
-		if err != nil || token.IsValid() == false {
+		if err != nil {
 			writeError(res, ErrMalformedToken)
 			return
 		}
@@ -137,11 +143,17 @@ func (s *Instance) validate() http.HandlerFunc {
 		if token.IsValid() == false {
 			tr.Status.Authenticated = false
 		} else {
+			user, err := token.GetUser()
+			if err != nil {
+				writeError(res, ErrServerError)
+				return
+			}
+
 			tr.Status.Authenticated = true
 			tr.Status.User = auth.UserInfo{
-				Username: token.User(),
-				UID:      token.Uid(),
-				Groups:   token.Groups(),
+				Username: user.Uid,
+				UID:      user.DN,
+				Groups:   user.Groups,
 			}
 		}
 

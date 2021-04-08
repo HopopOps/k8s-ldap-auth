@@ -1,4 +1,4 @@
-package ldap
+package types
 
 type User struct {
 	Uid    string

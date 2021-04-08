@@ -3,6 +3,8 @@ package types
 import (
 	"crypto/rand"
 	"crypto/rsa"
+	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/lestrrat-go/jwx/jwa"
@@ -55,24 +57,32 @@ func Parse(payload []byte, key *rsa.PrivateKey) (*Token, error) {
 	return token, nil
 }
 
+func (t *Token) GetUser() (*User, error) {
+	if v, ok := t.token.Get("user"); ok {
+		var user User
+
+		err := json.Unmarshal([]byte(fmt.Sprintf("%v", v)), &user)
+		if err != nil {
+			return nil, err
+		}
+
+		return &user, nil
+	}
+
+	return nil, fmt.Errorf("Could not get user attribute of jwt token")
+}
+
 func (t *Token) IsValid() bool {
-	return true
+	exp, err := t.Expiration()
+	return err == nil && time.Now().Unix() < exp.Unix()
 }
 
-func (t *Token) Groups() []string {
-	return nil
-}
+func (t *Token) Expiration() (time.Time, error) {
+	if v, ok := t.token.Get(jwt.ExpirationKey); ok {
+		return v.(time.Time), nil
+	}
 
-func (t *Token) Uid() string {
-	return ""
-}
-
-func (t *Token) User() string {
-	return ""
-}
-
-func (t *Token) Expiration() time.Time {
-	return time.Now()
+	return time.Time{}, fmt.Errorf("Could not get jwt expiration time")
 }
 
 func (t *Token) Payload(key *rsa.PrivateKey) ([]byte, error) {
