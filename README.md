@@ -3,13 +3,57 @@
 ## What
 This is a webhook token authentication plugin implementation for ldap backend inspired from Daniel Weibel article "Implementing LDAP authentication for Kubernetes" at https://itnext.io/implementing-ldap-authentication-for-kubernetes-732178ec2155
 
-k8s-ldap-auth is actually providing authentication with a token such as `base64(username:password)`, populating v1.UserInfo with: 
-```
-v1.UserInfo{
-  Username: ldapUser.uid,
-  UID:      ldapUser.dn,
-  Groups:   ldapUser[memberOfProperty],
-}
+k8s-ldap-auth provides two routes: `/auth` for the actual authentication from the CLI tool and `/token` for the token validation from the kube-api-server.
+
+## Configuration
+Access rights to clusters and resources will not be implemented with this authentication hook, kubernetes RBAC will do that for you.
+
+### Cluster
+
+### Client
+
+The same user definition can be used on different clusters if they share this authentication hook.
+
+```yml
+---
+apiVersion: v1
+kind: Config
+preferences: {}
+
+users:
+- name: my-user
+  user:
+    exec:
+      command: "k8s-ldap-auth"
+
+      apiVersion: "client.authentication.k8s.io/v1beta1"
+
+      env:
+      - name: "AUTH_API_VERSION"
+        value: "client.authentication.k8s.io/v1beta1"
+
+      args:
+      - "authenticate"
+      - "https://k8s-ldap/auth"
+
+      installHint: |
+        k8s-ldap-auth is required to authenticate to the current cluster.
+        It can be installed from https://github.com/vbouchaud/k8s-ldap-auth.
+
+      provideClusterInfo: false
+
+clusters:
+- cluster:
+    server: https://kube.cluster.local:6443
+  name: my-cluster
+
+contexts:
+- context:
+    cluster: my-cluster
+    user: my-user
+  name: my-user@my-cluster
+
+current-context: my-user@my-cluster
 ```
 
 ## Usage
@@ -35,5 +79,3 @@ OPTIONS:
 
 ## What's next
  - Group search for ldap not supporting memberof attribute
- - Entitlement check with ldap groups based on a configuration file
- - Some kind of authorization check based on groups and dn ?
