@@ -49,3 +49,7 @@ k8s-ldap-auth
 !k8s-ldap-auth/
 /.env*
 /tr.json
+
+# Custom #
+##########
+/mocks
