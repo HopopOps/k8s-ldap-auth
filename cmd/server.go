@@ -13,7 +13,7 @@ func getServerCmd() *cli.Command {
 		Name:     "server",
 		Aliases:  []string{"s", "serve"},
 		Usage:    "start the authentication server",
-		HideHelp: true,
+		HideHelp: false,
 		Flags: []cli.Flag{
 			// server configuration
 			&cli.StringFlag{
@@ -71,9 +71,9 @@ func getServerCmd() *cli.Command {
 			},
 			&cli.StringSliceFlag{
 				Name:    "search-attributes",
-				Value:   cli.NewStringSlice("uid", "dn", "cn"),
+				Value:   cli.NewStringSlice("uid", "dn"),
 				EnvVars: []string{"LDAP_USER_SEARCHATTR"},
-				Usage:   "Repeatable. User `PROPERTY` to fetch. Everything beside 'uid', 'dn', 'cn' (mandatory fields) will be stored in extra values in the UserInfo object.",
+				Usage:   "Repeatable. User `PROPERTY` to fetch. Everything beside 'uid', 'dn' (mandatory fields) will be stored in extra values in the UserInfo object.",
 			},
 			&cli.StringFlag{
 				Name:    "search-scope",
@@ -108,7 +108,7 @@ func getServerCmd() *cli.Command {
 					searchScope,
 					searchFilter,
 					memberOfProperty,
-					searchAttributes,
+					append(searchAttributes, memberOfProperty),
 				),
 				server.WithAccessLogs(),
 			)
