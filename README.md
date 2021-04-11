@@ -34,7 +34,7 @@ users:
 
       args:
       - "authenticate"
-      - "https://k8s-ldap/auth"
+      - "--endpoint=https://k8s-ldap/auth"
 
       installHint: |
         k8s-ldap-auth is required to authenticate to the current cluster.
@@ -76,6 +76,28 @@ OPTIONS:
    --search-attributes PROPERTY   Repeatable. User PROPERTY to fetch. Everything beside 'uid', 'dn', 'cn' (mandatory fields) will be stored in extra values in the UserInfo object. (default: "uid", "dn", "cn") [$LDAP_USER_SEARCHATTR]
    --search-scope SCOPE           The SCOPE of the search. Can take to values base object: 'base', single level: 'single' or whole subtree: 'sub'. (default: "sub") [$LDAP_USER_SEARCHSCOPE]
 ```
+
+## Build
+
+A stripped binary can be built with:
+```
+make k8s-ldap-auth
+```
+
+A stripped and compressed binary can be build with:
+```
+make release
+```
+
+Docker release multiarch image can be built and pushed with:
+```
+ORG=vbouchaud PLATFORM="linux/arm/v7,linux/amd64" make docker
+```
+`ORG` defaults to my private docker registry
+
+`PLATFORM` defaults to `linux/arm/v7,linux/arm64/v8,linux/amd64`
+
+## Deployment
 
 ## What's next
  - Group search for ldap not supporting memberof attribute
