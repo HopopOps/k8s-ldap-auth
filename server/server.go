@@ -36,6 +36,10 @@ func NewInstance(opts ...Option) (*Instance, error) {
 		k: key,
 	}
 
+	for _, opt := range opts {
+		opt(s)
+	}
+
 	r := mux.NewRouter()
 
 	r.HandleFunc("/auth", s.authenticate()).Methods("POST")
