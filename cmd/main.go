@@ -28,6 +28,7 @@ func Start() error {
 	}
 
 	app.UseShortOptionHandling = true
+	app.EnableBashCompletion = true
 	app.Commands = []*cli.Command{
 		getServerCmd(),
 	}
