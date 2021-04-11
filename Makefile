@@ -88,7 +88,7 @@ docker:
 
 ## Clean artifacts
 clean:
-	rm -f $(BIN)
+	rm -f $(BIN) $(BIN)-dev $(BIN)-packed
 
 $(BIN):
 	$(GO) build \
@@ -97,10 +97,26 @@ $(BIN):
 				-X $(PKG)/version.VERSION=$(GIT_TAG) \
 				-X $(PKG)/version.GOVERSION=$(GOVERSION) \
 				-X $(PKG)/version.BUILDTIME=$(BUILDTIME) \
+				-X $(PKG)/version.COMMITHASH=$(GIT_COMMIT) \
+				-s -w"
+
+$(BIN)-dev:
+	$(GO) build \
+		-o $(BIN)-dev -ldflags "\
+				-X $(PKG)/version.APPNAME=$(BIN) \
+				-X $(PKG)/version.VERSION=$(GIT_TAG) \
+				-X $(PKG)/version.GOVERSION=$(GOVERSION) \
+				-X $(PKG)/version.BUILDTIME=$(BUILDTIME) \
 				-X $(PKG)/version.COMMITHASH=$(GIT_COMMIT)"
 
 ## Dev build outside of docker, not stripped
-dev: $(BIN)
+dev: $(BIN)-dev
+
+$(BIN)-packed: $(BIN)
+	upx --best $(BIN) -o $(BIN)-packed
+
+## Release build outside of docker, stripped and packed
+release: $(BIN)-packed
 
 ## Print this help message
 help:
