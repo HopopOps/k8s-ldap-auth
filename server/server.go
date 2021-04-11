@@ -97,7 +97,7 @@ func (s *Instance) authenticate() http.HandlerFunc {
 		}
 
 		token := types.NewToken(data)
-		tokenData, err := token.Payload(nil)
+		tokenData, err := token.Payload(s.k)
 		if err != nil {
 			writeError(res, ErrServerError)
 			return
@@ -138,7 +138,7 @@ func (s *Instance) validate() http.HandlerFunc {
 		}
 		defer req.Body.Close()
 
-		token, err := types.Parse([]byte(tr.Spec.Token), nil)
+		token, err := types.Parse([]byte(tr.Spec.Token), s.k)
 		if err != nil {
 			writeError(res, ErrMalformedToken)
 			return
