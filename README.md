@@ -57,6 +57,8 @@ current-context: my-user@my-cluster
 ```
 
 ## Usage
+
+#### Server
 ```
 NAME:
    k8s-ldap-auth server - start the authentication server
@@ -73,8 +75,22 @@ OPTIONS:
    --search-base DN               The DN where the ldap search will take place. [$LDAP_USER_SEARCHBASE]
    --search-filter FILTER         The FILTER to select users. (default: "(&(objectClass=inetOrgPerson)(uid=%s))") [$LDAP_USER_SEARCHFILTER]
    --member-of-property PROPERTY  The PROPERTY where group entitlements are located. (default: "ismemberof") [$LDAP_USER_MEMBEROFPROPERTY]
-   --search-attributes PROPERTY   Repeatable. User PROPERTY to fetch. Everything beside 'uid', 'dn', 'cn' (mandatory fields) will be stored in extra values in the UserInfo object. (default: "uid", "dn", "cn") [$LDAP_USER_SEARCHATTR]
+   --search-attributes PROPERTY   Repeatable. User PROPERTY to fetch. Everything beside 'uid', 'dn' (mandatory fields) will be stored in extra values in the UserInfo object. (default: "uid", "dn") [$LDAP_USER_SEARCHATTR]
    --search-scope SCOPE           The SCOPE of the search. Can take to values base object: 'base', single level: 'single' or whole subtree: 'sub'. (default: "sub") [$LDAP_USER_SEARCHSCOPE]
+```
+
+#### Client
+```
+NAME:
+   k8s-ldap-auth authenticate - perform an authentication through a /auth endpoint
+
+USAGE:
+   k8s-ldap-auth authenticate [command options] [arguments...]
+
+OPTIONS:
+   --endpoint URI       The full URI the client will authenticate against.
+   --user USER          The USER the client will connect as. [$USER]
+   --password PASSWORD  The PASSWORD the client will connect with, can be located in '$XDG_CONFIG_HOME/k8s-ldap-auth/password'. [$PASSWORD]
 ```
 
 ## Build
