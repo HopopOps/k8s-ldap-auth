@@ -31,6 +31,7 @@ func Start() error {
 	app.EnableBashCompletion = true
 	app.Commands = []*cli.Command{
 		getServerCmd(),
+		getAuthenticationCmd(),
 	}
 
 	return app.Run(os.Args)

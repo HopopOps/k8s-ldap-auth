@@ -61,8 +61,12 @@ test-coverage:
 cover: test-coverage
 	$(GO) tool cover -html=coverage.out
 
+## Tidy dependencies
+tidy:
+	$(GO) mod tidy
+
 ## Install dependencies used for development
-install: hooks
+install: hooks tidy
 	$(GO) mod download
 
 ## Install git hooks for post-checkout & pre-commit
