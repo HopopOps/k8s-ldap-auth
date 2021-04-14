@@ -9,13 +9,14 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/rs/zerolog/log"
 	"golang.org/x/term"
 
 	"bouchaud.org/legion/kubernetes/k8s-ldap-auth/types"
 )
 
 func readData(readLine func(screen io.ReadWriter) (string, error)) (string, error) {
-	if !term.IsTerminal(0) || !term.IsTerminal(1) {
+	if !term.IsTerminal(0) {
 		return "", fmt.Errorf("stdin should be terminal")
 	}
 
@@ -68,18 +69,22 @@ func performAuth(addr, user, pass string) ([]byte, error) {
 	)
 
 	if user == "" {
+		log.Info().Msg("Username was not provided, asking for input")
 		user, err = readData(username)
 		if err != nil {
 			return nil, err
 		}
 	}
+	log.Info().Str("username", user).Msg("Username exists.")
 
 	if pass == "" {
+		log.Info().Msg("Password was not provided, asking for input")
 		pass, err = readData(password)
 		if err != nil {
 			return nil, err
 		}
 	}
+	log.Info().Msg("Password exists.")
 
 	cred := types.Credentials{
 		Username: user,
