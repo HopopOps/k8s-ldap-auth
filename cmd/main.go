@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
 
 	"bouchaud.org/legion/kubernetes/k8s-ldap-auth/version"
@@ -35,7 +36,7 @@ func Start() error {
 	app.Flags = []cli.Flag{
 		&cli.IntFlag{
 			Name:    "verbose",
-			Value:   int(zerolog.InfoLevel),
+			Value:   int(zerolog.ErrorLevel),
 			EnvVars: []string{"VERBOSE"},
 			Usage:   "The verbosity `LEVEL` - (rs/zerolog#Level values).",
 		},
@@ -43,10 +44,15 @@ func Start() error {
 
 	app.Before = func(c *cli.Context) error {
 		var (
-			verbose = c.Int("verbose")
+			verbose = zerolog.Level(c.Int("verbose"))
 		)
 
-		zerolog.SetGlobalLevel(zerolog.Level(verbose))
+		zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+		zerolog.SetGlobalLevel(verbose)
+
+		if verbose < zerolog.InfoLevel {
+			log.Logger = log.With().Caller().Logger()
+		}
 
 		return nil
 	}
