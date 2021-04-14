@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"os"
 
-	"bouchaud.org/legion/kubernetes/k8s-ldap-auth/version"
+	"github.com/rs/zerolog"
 	"github.com/urfave/cli/v2"
+
+	"bouchaud.org/legion/kubernetes/k8s-ldap-auth/version"
 )
 
 type action func(*cli.Context) error
@@ -29,6 +31,26 @@ func Start() error {
 
 	app.UseShortOptionHandling = true
 	app.EnableBashCompletion = true
+
+	app.Flags = []cli.Flag{
+		&cli.IntFlag{
+			Name:    "verbose",
+			Value:   int(zerolog.InfoLevel),
+			EnvVars: []string{"VERBOSE"},
+			Usage:   "The verbosity `LEVEL` - (rs/zerolog#Level values).",
+		},
+	}
+
+	app.Before = func(c *cli.Context) error {
+		var (
+			verbose = c.Int("verbose")
+		)
+
+		zerolog.SetGlobalLevel(zerolog.Level(verbose))
+
+		return nil
+	}
+
 	app.Commands = []*cli.Command{
 		getServerCmd(),
 		getAuthenticationCmd(),
