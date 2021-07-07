@@ -37,7 +37,7 @@ users:
       - "--endpoint=https://k8s-ldap/auth"
 
       installHint: |
-        k8s-ldap-auth is required to authenticate to the current cluster.
+        k8s-ldap-auth is required to authenticate to the current context.
         It can be installed from https://github.com/vbouchaud/k8s-ldap-auth.
 
       provideClusterInfo: false
