@@ -20,7 +20,8 @@ func Start() error {
 	}
 
 	app := cli.NewApp()
-	app.Name = "ldap-auth"
+	app.Name = "k8s-ldap-auth"
+	app.Usage = "A client/server for kubernetes webhook authentication."
 	app.Version = version.VERSION
 	app.Compiled = version.Compiled()
 	app.Authors = []*cli.Author{
