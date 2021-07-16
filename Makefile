@@ -11,8 +11,7 @@ NOW := $(shell date +%s)
 BIN := k8s-ldap-auth
 
 ORG ?= registry.aegir.bouchaud.org
-NAMESPACE := legion/kubernetes
-PKG := bouchaud.org/${NAMESPACE}/${BIN}
+PKG := bouchaud.org/legion/kubernetes/${BIN}
 PLATFORM ?= "linux/arm/v7,linux/arm64/v8,linux/amd64"
 GO ?= go
 GOFMT ?= gofmt -s
