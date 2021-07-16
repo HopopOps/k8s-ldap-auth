@@ -41,7 +41,9 @@ func readData(readLine func(screen io.ReadWriter) (string, error)) (string, erro
 }
 
 func username(screen io.ReadWriter) (string, error) {
-	terminal := term.NewTerminal(screen, "username: ")
+	terminal := term.NewTerminal(screen, "")
+
+	print("username: ")
 
 	line, err := terminal.ReadLine()
 	if err == io.EOF || line == "" {
@@ -53,6 +55,8 @@ func username(screen io.ReadWriter) (string, error) {
 
 func password(screen io.ReadWriter) (string, error) {
 	terminal := term.NewTerminal(screen, "")
+
+	print("password: ")
 
 	line, err := terminal.ReadPassword("password: ")
 	if err == io.EOF || line == "" {
@@ -100,6 +104,10 @@ func performAuth(addr, user, pass string) ([]byte, error) {
 		return nil, err
 	}
 	defer res.Body.Close()
+
+	if res.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf(http.StatusText(res.StatusCode))
+	}
 
 	var body []byte
 	body, err = ioutil.ReadAll(res.Body)

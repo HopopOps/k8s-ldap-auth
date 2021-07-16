@@ -25,7 +25,7 @@ func Auth(addr, user, pass string) error {
 	err = json.Unmarshal(token, &ec)
 	if err != nil || ec.Status.ExpirationTimestamp.Time.Unix() < time.Now().Unix() {
 		if err != nil {
-			log.Warn().Err(err).Msg("")
+			log.Warn().Err(err).Send()
 		} else {
 			log.Warn().Int64("expirationTimestamp", ec.Status.ExpirationTimestamp.Time.Unix()).Msg("ExecCredential expired.")
 		}
@@ -35,8 +35,8 @@ func Auth(addr, user, pass string) error {
 			log.Error().Err(err).Msg("Could not perform authentication.")
 			return err
 		}
-		log.Info().Msg("Authentication succeeded")
-		log.Debug().RawJSON("token", token).Msg("")
+		log.Info().Msg("Got credentials")
+		log.Debug().RawJSON("token", token).Send()
 
 		err = json.Unmarshal(token, &ec)
 		if err != nil {
@@ -44,7 +44,7 @@ func Auth(addr, user, pass string) error {
 			return err
 		}
 
-		log.Info().Msg("Token parsed successfuly")
+		log.Info().Msg("Token parsed successfully")
 	}
 
 	token, err = ec.Marshal("")
