@@ -53,3 +53,4 @@ k8s-ldap-auth*
 /.env*
 /tr.json
 /mocks
+/deploy
