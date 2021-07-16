@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/go-ldap/ldap"
+	"github.com/rs/zerolog/log"
 
 	"bouchaud.org/legion/kubernetes/k8s-ldap-auth/types"
 )
@@ -51,6 +52,7 @@ func (s *Ldap) Search(username, password string) (*types.User, error) {
 	if err != nil {
 		return nil, err
 	}
+	log.Debug().Msg("Successfully dialed ldap.")
 
 	defer l.Close()
 
@@ -58,6 +60,8 @@ func (s *Ldap) Search(username, password string) (*types.User, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	log.Debug().Msg("Successfully authenticated to ldap.")
 
 	// Execute LDAP Search request
 	searchRequest := ldap.NewSearchRequest(
@@ -78,10 +82,12 @@ func (s *Ldap) Search(username, password string) (*types.User, error) {
 
 	// If LDAP Search produced a result, return UserInfo, otherwise, return nil
 	if len(result.Entries) == 0 {
-		return nil, nil
+		return nil, fmt.Errorf("User not found")
 	} else if len(result.Entries) > 1 {
 		return nil, fmt.Errorf("Too many entries returned")
 	}
+
+	log.Debug().Msg("Research returned a result.")
 
 	// Bind as the user to verify their password
 	err = l.Bind(result.Entries[0].DN, password)
@@ -89,11 +95,14 @@ func (s *Ldap) Search(username, password string) (*types.User, error) {
 		return nil, err
 	}
 
-	// Rebinding as the read only user for any further queries is not necessary since the ldap connection will be closed.
+	log.Debug().Msg("Successfully bound as the user.")
 
-	return &types.User{
+	// Rebinding as the read only user for any further queries is not necessary since the ldap connection will be closed.
+	user := &types.User{
 		Uid:    strings.ToLower(result.Entries[0].GetAttributeValue("uid")),
 		DN:     strings.ToLower(result.Entries[0].DN),
 		Groups: sanitize(result.Entries[0].GetAttributeValues(s.memberOfProperty)),
-	}, nil
+	}
+
+	return user, nil
 }

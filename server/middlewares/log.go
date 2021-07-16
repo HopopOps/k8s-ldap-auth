@@ -1,9 +1,10 @@
 package middlewares
 
 import (
-	"log"
 	"net/http"
 	"time"
+
+	"github.com/rs/zerolog/log"
 )
 
 // ProxyResponseWriter is a workaround for getting HTTP Response information in the access logs
@@ -55,18 +56,16 @@ func AccessLog(next http.Handler) http.Handler {
 		next.ServeHTTP(wrapper, req)
 		elapsed := time.Now().Sub(received)
 
-		log.Printf(
-			"%s - - [%s] \"%s %s %s\" %d %d \"%s\" \"%s\" elapsed=%dus\n",
-			req.RemoteAddr,
-			received.Format("10/Oct/2000:13:55:36 -0700"),
-			req.Method,
-			req.URL.String(),
-			req.Proto,
-			wrapper.code,
-			wrapper.length,
-			req.Header.Get("Referer"),
-			req.Header.Get("User-Agent"),
-			elapsed.Microseconds(),
-		)
+		log.Info().
+			Str("remoteaddr", req.RemoteAddr).
+			Str("method", req.Method).
+			Str("url", req.URL.String()).
+			Str("proto", req.Proto).
+			Int("code", wrapper.code).
+			Int("length", wrapper.length).
+			Str("referer", req.Header.Get("Referer")).
+			Str("useragent", req.Header.Get("User-Agent")).
+			Int64("elapsed", elapsed.Microseconds()).
+			Send()
 	})
 }

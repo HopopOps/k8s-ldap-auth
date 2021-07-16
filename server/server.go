@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/rs/zerolog/log"
 
 	auth "k8s.io/api/authentication/v1"
 	machinery "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -26,6 +27,7 @@ type Instance struct {
 }
 
 func NewInstance(opts ...Option) (*Instance, error) {
+	log.Info().Msg("Creating a new RSA key.")
 	key, err := types.Key()
 	if err != nil {
 		return nil, err
@@ -36,14 +38,18 @@ func NewInstance(opts ...Option) (*Instance, error) {
 		k: key,
 	}
 
+	log.Info().Msg("Applying extra options.")
 	for _, opt := range opts {
 		opt(s)
 	}
 
 	r := mux.NewRouter()
 
+	log.Info().Msg("Registering route handlers.")
 	r.HandleFunc("/auth", s.authenticate()).Methods("POST")
 	r.HandleFunc("/token", s.validate()).Methods("POST")
+
+	log.Info().Msg("Applying middlewares.")
 	r.Use(s.m...)
 
 	http.Handle("/", r)
@@ -59,76 +65,110 @@ func (s *Instance) Start(addr string) error {
 	return nil
 }
 
-func writeError(res http.ResponseWriter, s *ServerError) {
+func writeExecCredentialError(res http.ResponseWriter, s *ServerError) {
 	res.WriteHeader(s.s)
-	res.Write([]byte(s.e.Error()))
+
+	ec := client.ExecCredential{
+		Spec: client.ExecCredentialSpec{
+			// Response: &client.Response{
+			//		Code: s.s,
+			// },
+		},
+	}
+
+	res.Header().Set(ContentTypeHeader, ContentTypeJSON)
+	json.NewEncoder(res).Encode(ec)
 }
 
 func (s *Instance) authenticate() http.HandlerFunc {
 	return func(res http.ResponseWriter, req *http.Request) {
 		if req.Header.Get(ContentTypeHeader) != ContentTypeJSON {
-			writeError(res, ErrNotAcceptable)
+			writeExecCredentialError(res, ErrNotAcceptable)
 			return
 		}
 
 		decoder := json.NewDecoder(req.Body)
 		var credentials types.Credentials
 		if err := decoder.Decode(&credentials); err != nil {
-			writeError(res, ErrDecodeFailed)
+			writeExecCredentialError(res, ErrDecodeFailed)
 			return
 		}
 		defer req.Body.Close()
 
 		if !credentials.IsValid() {
-			writeError(res, ErrMalformedCredentials)
+			writeExecCredentialError(res, ErrMalformedCredentials)
 			return
 		}
 
+		log.Debug().Str("username", credentials.Username).Msg("Received valid authentication request.")
 		user, err := s.l.Search(credentials.Username, credentials.Password)
-		if err != nil {
-			writeError(res, ErrUnauthorized)
+		if err != nil || user == nil {
+			writeExecCredentialError(res, ErrUnauthorized)
 			return
 		}
+
+		log.Debug().Str("username", credentials.Username).Msg("Successfully authenticated.")
 
 		data, err := json.Marshal(user)
 		if err != nil {
-			writeError(res, ErrServerError)
+			writeExecCredentialError(res, ErrServerError)
 			return
 		}
+
+		log.Debug().Str("username", credentials.Username).Str("data", string(data)).Msg("Generating token.")
 
 		token := types.NewToken(data)
 		tokenData, err := token.Payload(s.k)
 		if err != nil {
-			writeError(res, ErrServerError)
+			writeExecCredentialError(res, ErrServerError)
 			return
 		}
 
 		tokenExp, err := token.Expiration()
 		if err != nil {
-			writeError(res, ErrServerError)
+			writeExecCredentialError(res, ErrServerError)
 			return
 		}
 
-		ec := client.ExecCredential{
+		log.Debug().Str("username", credentials.Username).Str("token", string(tokenData)).Msg("Sending back token.")
+
+		res.Header().Set(ContentTypeHeader, ContentTypeJSON)
+		json.NewEncoder(res).Encode(client.ExecCredential{
 			Status: &client.ExecCredentialStatus{
 				Token: string(tokenData),
 				ExpirationTimestamp: &machinery.Time{
 					Time: tokenExp,
 				},
 			},
-		}
-
-		res.Header().Set(ContentTypeHeader, ContentTypeJSON)
-		json.NewEncoder(res).Encode(ec)
+		})
 	}
+}
+
+func writeError(res http.ResponseWriter, s *ServerError) {
+	res.WriteHeader(s.s)
+	res.Write([]byte(s.e.Error()))
+}
+
+func writeTokenReviewError(res http.ResponseWriter, s *ServerError, tr auth.TokenReview) {
+	res.WriteHeader(s.s)
+
+	tr.Status.Authenticated = false
+	tr.Status.Error = s.e.Error()
+
+	res.Header().Set(ContentTypeHeader, ContentTypeJSON)
+	json.NewEncoder(res).Encode(tr)
 }
 
 func (s *Instance) validate() http.HandlerFunc {
 	return func(res http.ResponseWriter, req *http.Request) {
+		log.Debug().Msg("Got a request.")
+
 		if req.Header.Get(ContentTypeHeader) != ContentTypeJSON {
 			writeError(res, ErrNotAcceptable)
 			return
 		}
+
+		log.Debug().Msg("Request is in JSON.")
 
 		decoder := json.NewDecoder(req.Body)
 		var tr auth.TokenReview
@@ -138,20 +178,31 @@ func (s *Instance) validate() http.HandlerFunc {
 		}
 		defer req.Body.Close()
 
+		log.Debug().Str("token", tr.Spec.Token).Msg("Request is a TokenReview.")
+
 		token, err := types.Parse([]byte(tr.Spec.Token), s.k)
 		if err != nil {
-			writeError(res, ErrMalformedToken)
+			log.Debug().Str("err", err.Error()).Msg("Failed to parse token")
+
+			writeTokenReviewError(res, ErrMalformedToken, tr)
 			return
 		}
 
+		log.Debug().Msg("TokenReview was parsed.")
+
 		if token.IsValid() == false {
+			log.Debug().Msg("TokenReview is not valid.")
 			tr.Status.Authenticated = false
 		} else {
 			user, err := token.GetUser()
 			if err != nil {
-				writeError(res, ErrServerError)
+				log.Debug().Str("error", err.Error()).Msg("Could not extract user.")
+
+				writeTokenReviewError(res, ErrServerError, tr)
 				return
 			}
+
+			log.Debug().Msg("Got user from token.")
 
 			tr.Status.Authenticated = true
 			tr.Status.User = auth.UserInfo{

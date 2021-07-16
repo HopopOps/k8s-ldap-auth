@@ -3,12 +3,14 @@ package types
 import (
 	"crypto/rand"
 	"crypto/rsa"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"time"
 
 	"github.com/lestrrat-go/jwx/jwa"
 	"github.com/lestrrat-go/jwx/jwt"
+	"github.com/rs/zerolog/log"
 )
 
 func Key() (*rsa.PrivateKey, error) {
@@ -61,7 +63,14 @@ func (t *Token) GetUser() (*User, error) {
 	if v, ok := t.token.Get("user"); ok {
 		var user User
 
-		err := json.Unmarshal([]byte(fmt.Sprintf("%v", v)), &user)
+		log.Debug().Str("data", fmt.Sprintf("%v", v)).Msg("Got user data.")
+
+		data, err := base64.StdEncoding.WithPadding(base64.NoPadding).DecodeString(fmt.Sprintf("%v", v))
+		if err != nil {
+			return nil, err
+		}
+
+		err = json.Unmarshal(data, &user)
 		if err != nil {
 			return nil, err
 		}
@@ -74,6 +83,13 @@ func (t *Token) GetUser() (*User, error) {
 
 func (t *Token) IsValid() bool {
 	exp, err := t.Expiration()
+
+	if err != nil {
+		log.Debug().Str("err", err.Error()).Msg("token validation")
+	} else {
+		log.Debug().Str("exp", exp.String()).Bool("stillvalid", time.Now().Unix() < exp.Unix()).Msg("token validation")
+	}
+
 	return err == nil && time.Now().Unix() < exp.Unix()
 }
 
