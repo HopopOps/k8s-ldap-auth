@@ -97,7 +97,7 @@ users:
   - name: my-user
     user:
       exec:
-        command: kube-ldap-auth
+        command: k8s-ldap-auth
 
         apiVersion: client.authentication.k8s.io/v1beta1
 
