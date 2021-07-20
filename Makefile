@@ -8,10 +8,11 @@ RESET  := $(shell tput -Txterm sgr0)
 # The binary to build (just the basename).
 PWD := $(shell pwd)
 NOW := $(shell date +%s)
-BIN := k8s-ldap-auth
+APPNAME := k8s-ldap-auth
+BIN ?= $(APPNAME)
 
 ORG ?= registry.aegir.bouchaud.org
-PKG := bouchaud.org/legion/kubernetes/${BIN}
+PKG := bouchaud.org/legion/kubernetes/$(APPNAME)
 PLATFORM ?= "linux/arm/v7,linux/arm64/v8,linux/amd64"
 GO ?= go
 GOFMT ?= gofmt -s
@@ -85,7 +86,7 @@ docker:
 		--build-arg BUILDTIME="$(BUILDTIME)" \
 		--build-arg VERSION="$(GIT_TAG)" \
 		--build-arg PKG="$(PKG)" \
-		--build-arg APPNAME="$(BIN)" \
+		--build-arg APPNAME="$(APPNAME)" \
 		--platform $(PLATFORM) \
 		--tag $(ORG)/$(BIN):$(TAG) \
 		--tag $(ORG)/$(BIN):latest \
@@ -95,35 +96,35 @@ docker:
 clean:
 	rm -f $(BIN) $(BIN)-dev $(BIN)-packed
 
-$(BIN):
+$(APPNAME):
 	$(GO) build \
 		-gcflags=-trimpath=$(CURRENT_PATH) \
 		-asmflags=-trimpath=$(CURRENT_PATH) \
 		-o $(BIN) -ldflags "\
-				-X $(PKG)/version.APPNAME=$(BIN) \
+				-X $(PKG)/version.APPNAME=$(APPNAME) \
 				-X $(PKG)/version.VERSION=$(GIT_TAG) \
 				-X $(PKG)/version.GOVERSION=$(GOVERSION) \
 				-X $(PKG)/version.BUILDTIME=$(BUILDTIME) \
 				-X $(PKG)/version.COMMITHASH=$(GIT_COMMIT) \
 				-s -w"
 
-$(BIN)-dev:
+$(APPNAME)-dev:
 	$(GO) build \
 		-o $(BIN)-dev -ldflags "\
-				-X $(PKG)/version.APPNAME=$(BIN) \
+				-X $(PKG)/version.APPNAME=$(APPNAME) \
 				-X $(PKG)/version.VERSION=$(GIT_TAG) \
 				-X $(PKG)/version.GOVERSION=$(GOVERSION) \
 				-X $(PKG)/version.BUILDTIME=$(BUILDTIME) \
 				-X $(PKG)/version.COMMITHASH=$(GIT_COMMIT)"
 
 ## Dev build outside of docker, not stripped
-dev: $(BIN)-dev
+dev: $(APPNAME)-dev
 
-$(BIN)-packed: $(BIN)
-	upx --best $(BIN) -o $(BIN)-packed
+$(APPNAME)-packed: $(APPNAME)
+	upx --best $(APPNAME) -o $(APPNAME)-packed
 
 ## Release build outside of docker, stripped and packed
-release: $(BIN)-packed
+release: $(APPNAME)-packed
 
 ## Print this help message
 help:
