@@ -1,14 +1,23 @@
 # k8s-ldap-auth
 
 ## What
-This is a webhook token authentication plugin implementation for ldap backend inspired from Daniel Weibel article "Implementing LDAP authentication for Kubernetes" at https://itnext.io/implementing-ldap-authentication-for-kubernetes-732178ec2155
+This is a webhook token authentication plugin implementation for ldap backend inspired by Daniel Weibel article "Implementing LDAP authentication for Kubernetes" at https://itnext.io/implementing-ldap-authentication-for-kubernetes-732178ec2155
 
-k8s-ldap-auth provides two routes: `/auth` for the actual authentication from the CLI tool and `/token` for the token validation from the kube-api-server.
+k8s-ldap-auth provides two routes:
+ - `/auth` for the actual authentication from the CLI tool
+ - `/token` for the token validation from the kube-apiserver.
 
 The user created from the TokenReview will contain both uid and groups from the LDAP user so you can use both for role binding.
 
+The same k8s-ldap-auth server can be used to authenticate with multiple kubernetes cluster since the ExecCredential it provides contains a signed token that will eventually be used by a kube-apiserver in a TokenReview that will be sent back.
+
+It is actually in use in this setup
+
 ## Configuration
-Access rights to clusters and resources will not be implemented with this authentication hook, kubernetes RBAC will do that for you. `KUBERNETES_EXEC_INFO` is currently disregarded but might be used in future versions.
+
+Access rights to clusters and resources will not be implemented with this authentication hook, kubernetes RBAC will do that for you.
+
+`KUBERNETES_EXEC_INFO` is currently disregarded but might be used in future versions.
 
 ### Cluster
 
@@ -109,15 +118,15 @@ users:
         apiVersion: client.authentication.k8s.io/v1beta1
 
         env:
-          # This environment variable is used with `k8s-ldap-auth` create an
-          # ExecCredential. Future version of this authenticator might not need
-          # it but you'll have to provide it for now.
+          # This environment variable is used within `k8s-ldap-auth` to create
+          # an ExecCredential. Future version of this authenticator might not
+          # need it but you'll have to provide it for now.
           - name: AUTH_API_VERSION
             value: client.authentication.k8s.io/v1beta1
 
           # You can fill a USER environment variable to your username if you
-          # want to bypass the USER from you system or to an empty one if you
-          # want the authenticator to ask you to provide it at runtime.
+          # want to overwrite the USER from you system or to an empty one if you
+          # want the authenticator to ask for one at runtime.
           - name: USER
             value: ""
 
