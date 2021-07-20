@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/mattn/go-isatty"
 	"github.com/rs/zerolog/log"
 	"golang.org/x/term"
 
@@ -16,15 +17,15 @@ import (
 )
 
 func readData(readLine func(screen io.ReadWriter) (string, error)) (string, error) {
-	if !term.IsTerminal(0) {
+	if !isatty.IsTerminal(os.Stdin.Fd()) && !isatty.IsCygwinTerminal(os.Stdin.Fd()) {
 		return "", fmt.Errorf("stdin should be terminal")
 	}
 
-	oldState, err := term.MakeRaw(0)
+	oldState, err := term.MakeRaw(int(os.Stdin.Fd()))
 	if err != nil {
 		return "", err
 	}
-	defer term.Restore(0, oldState)
+	defer term.Restore(int(os.Stdin.Fd()), oldState)
 
 	screen := struct {
 		io.Reader
@@ -59,6 +60,8 @@ func password(screen io.ReadWriter) (string, error) {
 	print("password: ")
 
 	line, err := terminal.ReadPassword("")
+	print("\n")
+
 	if err == io.EOF || line == "" {
 		return "", fmt.Errorf("password cannot be empty")
 	}
