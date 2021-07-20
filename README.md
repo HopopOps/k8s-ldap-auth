@@ -12,7 +12,7 @@ Access rights to clusters and resources will not be implemented with this authen
 
 ### Cluster
 
-In the following example, I use the api version `client.authentication.k8s.io/v1beta1`. Feel free to put another better suited for your need if needed.
+In the following example, I use the api version `client.authentication.k8s.io/v1beta1`. Feel free to put another better suited for your need.
 
 The following authentication token webhook config file will have to exist on every control-plane. In the following configuration it's located at `/etc/kubernetes/webhook-auth-config.yml`:
 ```yml
@@ -58,7 +58,7 @@ apiServer:
 
 #### Existing cluster
 
-If the cluster was created with kubeadm, edit the kubeadm configuration file stored in namespace kube-system to add the configuration from above: `kubectl --namespace kube-system edit configmaps kubeadm-config`
+If the cluster was created with kubeadm, edit the kubeadm configuration stored in the namespace `kube-system` to add the configuration from above: `kubectl --namespace kube-system edit configmaps kubeadm-config`
 Editing this configuration does not actually update your api-server. It will however be used if you need to add a new control-plane with `kubeadm join`.
 
 On every control plane, edit the manifest found at `/etc/kubernetes/manifests/kube-apiserver.yaml`:
@@ -97,24 +97,48 @@ users:
   - name: my-user
     user:
       exec:
+        # In the following, we assume a binary called `k8s-ldap-auth` is
+        # available in the path. You can instead put a path to the binary.
+        # Windows paths do work with kubectl so the following would also work:
+        # `C:\users\foo\Documents\k8s-ldap-auth.exe`.
         command: k8s-ldap-auth
 
+        # This field is used by kubectl to fill a template TokenReview in
+        # `$KUBERNETES_EXEC_INFO` environment variable. Not currently used, it's
+        # might be in the future.
         apiVersion: client.authentication.k8s.io/v1beta1
 
         env:
+          # This environment variable is used with `k8s-ldap-auth` create an
+          # ExecCredential. Future version of this authenticator might not need
+          # it but you'll have to provide it for now.
           - name: AUTH_API_VERSION
             value: client.authentication.k8s.io/v1beta1
 
+          # You can fill a USER environment variable to your username if you
+          # want to bypass the USER from you system or to an empty one if you
+          # want the authenticator to ask you to provide it at runtime.
+          - name: USER
+            value: ""
+
         args:
           - authenticate
+
+          # This is the endpoint to authenticate against. Basically, the server
+          # started with `k8s-ldap-auth server` plus the `/auth` route, used for
+          # authentication.
           - --endpoint=https://k8s-ldap-auth/auth
 
         installHint: |
           k8s-ldap-auth is required to authenticate to the current context.
           It can be installed from https://github.com/vbouchaud/k8s-ldap-auth.
 
+        # This parameter, when true, tells `kubectl` to fill the TokenReview in
+        # the `$KUBERNETES_EXEC_INFO` environment variable with extra config
+        # from the definition of the specific cluster currently targeted.
+        # This is not used today but might be in the future to allow for custom
+        # rules on a per-cluster basis.
         provideClusterInfo: false
-
 ```
 
 ## Usage
@@ -166,6 +190,9 @@ OPTIONS:
 ```
 
 #### Client
+
+Even though it's not specified anywhere, the `--password` option and the equivalent `$PASSWORD` environment variable as well as the configfile containing a password were added for convenience sake, e.g. when running in an automated fashion, etc. If not provided, it will be asked at runtime. The same can be said for `--user` options and `$USER` environment variables.
+
 ```
 NAME:
    k8s-ldap-auth authenticate - perform an authentication through a /auth endpoint
@@ -176,7 +203,7 @@ USAGE:
 OPTIONS:
    --endpoint URI       The full URI the client will authenticate against.
    --user USER          The USER the client will connect as. [$USER]
-   --password PASSWORD  The PASSWORD the client will connect with, can be located in '/home/vianney/.config/k8s-ldap-auth/password'. [$PASSWORD]
+   --password PASSWORD  The PASSWORD the client will connect with, can be located in '$XDG_CONFIG_HOME/k8s-ldap-auth/password'. [$PASSWORD]
    --help, -h           show help (default: false)
 ```
 
@@ -200,6 +227,7 @@ PLATFORM="linux/arm/v7,linux/amd64" make docker
 `PLATFORM` defaults to `linux/arm/v7,linux/arm64/v8,linux/amd64`
 
 ## What's next
- - Group search for ldap not supporting memberof attribute
- - Helm chart
- - Persisting certificates for jwt signing and validation so we can have multiple replicas
+
+ - Group search for ldap not supporting `memberof` attribute ;
+ - Helm chart ;
+ - Persisting certificates for jwt signing and validation so we can have multiple replicas of the server.
