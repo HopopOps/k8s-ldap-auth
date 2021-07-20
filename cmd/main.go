@@ -52,7 +52,7 @@ func Start() error {
 		zerolog.SetGlobalLevel(verbose)
 
 		if verbose < zerolog.InfoLevel {
-			log.Logger = log.With().Caller().Logger()
+			log.Logger = log.With().Logger()
 		}
 
 		return nil

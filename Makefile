@@ -28,6 +28,8 @@ BUILDTIME := $(shell date -u +"%FT%TZ%:z")
 ARCH := $(shell uname -m)
 TAG ?= $(GIT_TAG)
 
+CURRENT_PATH := $(shell pwd)
+
 .PHONY: fmt fmt-check vet test test-coverage cover install hooks docker tag push help clean dev
 default: help
 
@@ -95,6 +97,8 @@ clean:
 
 $(BIN):
 	$(GO) build \
+		-gcflags=-trimpath=$(CURRENT_PATH) \
+		-asmflags=-trimpath=$(CURRENT_PATH) \
 		-o $(BIN) -ldflags "\
 				-X $(PKG)/version.APPNAME=$(BIN) \
 				-X $(PKG)/version.VERSION=$(GIT_TAG) \
