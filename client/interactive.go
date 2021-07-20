@@ -58,7 +58,7 @@ func password(screen io.ReadWriter) (string, error) {
 
 	print("password: ")
 
-	line, err := terminal.ReadPassword("password: ")
+	line, err := terminal.ReadPassword("")
 	if err == io.EOF || line == "" {
 		return "", fmt.Errorf("password cannot be empty")
 	}
