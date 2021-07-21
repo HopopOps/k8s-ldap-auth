@@ -60,7 +60,6 @@ func password(screen io.ReadWriter) (string, error) {
 	print("password: ")
 
 	line, err := terminal.ReadPassword("")
-	print("\n")
 
 	if err == io.EOF || line == "" {
 		return "", fmt.Errorf("password cannot be empty")
@@ -78,6 +77,7 @@ func performAuth(addr, user, pass string) ([]byte, error) {
 	if user == "" {
 		log.Info().Msg("Username was not provided, asking for input")
 		user, err = readData(username)
+		print("\n")
 		if err != nil {
 			return nil, err
 		}
@@ -87,6 +87,7 @@ func performAuth(addr, user, pass string) ([]byte, error) {
 	if pass == "" {
 		log.Info().Msg("Password was not provided, asking for input")
 		pass, err = readData(password)
+		print("\n")
 		if err != nil {
 			return nil, err
 		}
