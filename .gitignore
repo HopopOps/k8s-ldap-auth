@@ -49,8 +49,6 @@ coverage.out
 # Custom #
 ##########
 k8s-ldap-auth*
-!k8s-ldap-auth/
 /.env*
 /tr.json
-/mocks
 /deploy

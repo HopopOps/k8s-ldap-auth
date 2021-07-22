@@ -1,0 +1,4 @@
+**/.git
+/deploy
+k8s-ldap-auth*
+/.env*
