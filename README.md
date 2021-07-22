@@ -1,9 +1,12 @@
 # k8s-ldap-auth
 
 ## What
+
 This is a webhook token authentication plugin implementation for ldap backend inspired by Daniel Weibel article "Implementing LDAP authentication for Kubernetes" at https://itnext.io/implementing-ldap-authentication-for-kubernetes-732178ec2155
 
-k8s-ldap-auth provides two routes:
+k8s-ldap-auth is released as a binary containing both client and server.
+
+The server part provides two routes:
  - `/auth` for the actual authentication from the CLI tool
  - `/token` for the token validation from the kube-apiserver.
 
@@ -11,11 +14,11 @@ The user created from the TokenReview will contain both uid and groups from the 
 
 The same k8s-ldap-auth server can be used to authenticate with multiple kubernetes cluster since the ExecCredential it provides contains a signed token that will eventually be used by a kube-apiserver in a TokenReview that will be sent back.
 
-It is actually in use in this setup
+I actually use this setup on quite a few clusters with a growing userbase.
 
 ## Configuration
 
-Access rights to clusters and resources will not be implemented with this authentication hook, kubernetes RBAC will do that for you.
+Access rights to clusters and resources will not be implemented in this authentication hook, kubernetes RBAC will do that for you.
 
 `KUBERNETES_EXEC_INFO` is currently disregarded but might be used in future versions.
 
@@ -160,7 +163,7 @@ USAGE:
    k8s-ldap-auth [global options] command [command options] [arguments...]
 
 VERSION:
-   v0.1.0
+   v1.0.0
 
 AUTHOR:
    Vianney Bouchaud <vianney@bouchaud.org>
@@ -195,6 +198,8 @@ OPTIONS:
    --member-of-property PROPERTY  The PROPERTY where group entitlements are located. (default: "ismemberof") [$LDAP_USER_MEMBEROFPROPERTY]
    --search-attributes PROPERTY   Repeatable. User PROPERTY to fetch. Everything beside 'uid', 'dn' (mandatory fields) will be stored in extra values in the UserInfo object. (default: "uid", "dn") [$LDAP_USER_SEARCHATTR]
    --search-scope SCOPE           The SCOPE of the search. Can take to values base object: 'base', single level: 'single' or whole subtree: 'sub'. (default: "sub") [$LDAP_USER_SEARCHSCOPE]
+   --private-key-file PATH        The PATH to the private key file [$PRIVATE_KEY_FILE]
+   --public-key-file PATH         The PATH to the public key file [$PUBLIC_KEY_FILE]
    --help, -h                     show help (default: false)
 ```
 
