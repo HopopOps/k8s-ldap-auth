@@ -1,7 +1,6 @@
 package types
 
 import (
-	"crypto/rand"
 	"crypto/rsa"
 	"encoding/base64"
 	"encoding/json"
@@ -12,15 +11,6 @@ import (
 	"github.com/lestrrat-go/jwx/jwt"
 	"github.com/rs/zerolog/log"
 )
-
-func Key() (*rsa.PrivateKey, error) {
-	key, err := rsa.GenerateKey(rand.Reader, 2048)
-	if err != nil {
-		return nil, err
-	}
-
-	return key, nil
-}
 
 type Token struct {
 	token jwt.Token

@@ -27,20 +27,16 @@ type Instance struct {
 }
 
 func NewInstance(opts ...Option) (*Instance, error) {
-	log.Info().Msg("Creating a new RSA key.")
-	key, err := types.Key()
-	if err != nil {
-		return nil, err
-	}
-
 	s := &Instance{
 		m: []mux.MiddlewareFunc{},
-		k: key,
 	}
 
 	log.Info().Msg("Applying extra options.")
 	for _, opt := range opts {
-		opt(s)
+		err := opt(s)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	r := mux.NewRouter()

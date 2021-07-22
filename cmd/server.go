@@ -81,6 +81,16 @@ func getServerCmd() *cli.Command {
 				EnvVars: []string{"LDAP_USER_SEARCHSCOPE"},
 				Usage:   "The `SCOPE` of the search. Can take to values base object: 'base', single level: 'single' or whole subtree: 'sub'.",
 			},
+			&cli.StringFlag{
+				Name:    "private-key-file",
+				Usage:   "The `PATH` to the private key file",
+				EnvVars: []string{"PRIVATE_KEY_FILE"},
+			},
+			&cli.StringFlag{
+				Name:    "public-key-file",
+				Usage:   "The `PATH` to the public key file",
+				EnvVars: []string{"PUBLIC_KEY_FILE"},
+			},
 		},
 		Action: func(c *cli.Context) error {
 			var (
@@ -95,6 +105,8 @@ func getServerCmd() *cli.Command {
 				searchFilter     = c.String("search-filter")
 				searchAttributes = c.StringSlice("search-attributes")
 				memberOfProperty = c.String("member-of-property")
+				privateKeyFile   = c.String("private-key-file")
+				publicKeyFile    = c.String("public-key-file")
 			)
 
 			addr := fmt.Sprintf("%s:%d", host, port)
@@ -111,6 +123,10 @@ func getServerCmd() *cli.Command {
 					append(searchAttributes, memberOfProperty),
 				),
 				server.WithAccessLogs(),
+				server.WithKey(
+					privateKeyFile,
+					publicKeyFile,
+				),
 			)
 			if err != nil {
 				return fmt.Errorf("There was an error instanciation the server, %w", err)

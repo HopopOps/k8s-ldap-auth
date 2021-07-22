@@ -239,4 +239,3 @@ PLATFORM="linux/arm/v7,linux/amd64" make docker
 
  - Group search for ldap not supporting `memberof` attribute ;
  - Helm chart ;
- - Persisting certificates for jwt signing and validation so we can have multiple replicas of the server.
