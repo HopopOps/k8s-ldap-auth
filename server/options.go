@@ -58,3 +58,12 @@ func WithKey(privateKeyFile, publicKeyFile string) Option {
 		return err
 	}
 }
+
+// WithLdap bind a ldap object to a server instance
+func WithTTL(ttl int64) Option {
+	return func(i *Instance) error {
+		i.ttl = ttl
+
+		return nil
+	}
+}

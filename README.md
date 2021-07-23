@@ -200,6 +200,7 @@ OPTIONS:
    --search-scope SCOPE           The SCOPE of the search. Can take to values base object: 'base', single level: 'single' or whole subtree: 'sub'. (default: "sub") [$LDAP_USER_SEARCHSCOPE]
    --private-key-file PATH        The PATH to the private key file [$PRIVATE_KEY_FILE]
    --public-key-file PATH         The PATH to the public key file [$PUBLIC_KEY_FILE]
+   --token-ttl TTL                The TTL for newly generated tokens, in seconds (default: 43200) [$TTL]
    --help, -h                     show help (default: false)
 ```
 

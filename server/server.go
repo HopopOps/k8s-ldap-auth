@@ -21,9 +21,10 @@ const ContentTypeHeader = "Content-Type"
 const ContentTypeJSON = "application/json"
 
 type Instance struct {
-	l *ldap.Ldap
-	m []mux.MiddlewareFunc
-	k *rsa.PrivateKey
+	l   *ldap.Ldap
+	m   []mux.MiddlewareFunc
+	k   *rsa.PrivateKey
+	ttl int64
 }
 
 func NewInstance(opts ...Option) (*Instance, error) {
@@ -113,7 +114,7 @@ func (s *Instance) authenticate() http.HandlerFunc {
 
 		log.Debug().Str("username", credentials.Username).Str("data", string(data)).Msg("Generating token.")
 
-		token := types.NewToken(data)
+		token := types.NewToken(data, s.ttl)
 		tokenData, err := token.Payload(s.k)
 		if err != nil {
 			writeExecCredentialError(res, ErrServerError)

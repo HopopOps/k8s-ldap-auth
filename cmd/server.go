@@ -81,6 +81,8 @@ func getServerCmd() *cli.Command {
 				EnvVars: []string{"LDAP_USER_SEARCHSCOPE"},
 				Usage:   "The `SCOPE` of the search. Can take to values base object: 'base', single level: 'single' or whole subtree: 'sub'.",
 			},
+
+			// jtw signing configuration
 			&cli.StringFlag{
 				Name:    "private-key-file",
 				Usage:   "The `PATH` to the private key file",
@@ -90,6 +92,12 @@ func getServerCmd() *cli.Command {
 				Name:    "public-key-file",
 				Usage:   "The `PATH` to the public key file",
 				EnvVars: []string{"PUBLIC_KEY_FILE"},
+			},
+			&cli.Int64Flag{
+				Name:    "token-ttl",
+				Value:   43200,
+				EnvVars: []string{"TTL"},
+				Usage:   "The `TTL` for newly generated tokens, in seconds",
 			},
 		},
 		Action: func(c *cli.Context) error {
@@ -105,8 +113,11 @@ func getServerCmd() *cli.Command {
 				searchFilter     = c.String("search-filter")
 				searchAttributes = c.StringSlice("search-attributes")
 				memberOfProperty = c.String("member-of-property")
-				privateKeyFile   = c.String("private-key-file")
-				publicKeyFile    = c.String("public-key-file")
+
+				privateKeyFile = c.String("private-key-file")
+				publicKeyFile  = c.String("public-key-file")
+
+				ttl = c.Int64("token-ttl")
 			)
 
 			addr := fmt.Sprintf("%s:%d", host, port)
@@ -127,6 +138,7 @@ func getServerCmd() *cli.Command {
 					privateKeyFile,
 					publicKeyFile,
 				),
+				server.WithTTL(ttl),
 			)
 			if err != nil {
 				return fmt.Errorf("There was an error instanciation the server, %w", err)

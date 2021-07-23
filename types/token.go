@@ -16,12 +16,12 @@ type Token struct {
 	token jwt.Token
 }
 
-func NewToken(data []byte) *Token {
+func NewToken(data []byte, ttl int64) *Token {
 	now := time.Now()
 
 	t := jwt.New()
 	t.Set(jwt.IssuedAtKey, now.Unix())
-	t.Set(jwt.ExpirationKey, now.Add(12*time.Hour).Unix())
+	t.Set(jwt.ExpirationKey, now.Add(time.Duration(ttl)).Unix())
 	t.Set("user", data)
 
 	token := &Token{
