@@ -241,6 +241,24 @@ PLATFORM="linux/arm/v7,linux/amd64" make docker
 
 `PLATFORM` defaults to `linux/arm/v7,linux/arm64/v8,linux/amd64`
 
+## Distribution
+
+### Docker
+A docker image of this projet is available for arm/v7, arm64/v8, amd64 at [vbouchaud/k8s-ldap-auth](https://hub.docker.com/r/vbouchaud/k8s-ldap-auth) on docker hub.
+
+### Binary
+Binaries for the following OS and architectures are available on the release page:
+ - linux/arm64
+ - linux/arm
+ - linux/amd64
+ - darwin/arm64
+ - darwin/amd64
+ - windows/amd64
+
+### Linux
+#### Archlinux
+A PKGBUILD named k8s-ldap-auth-bin is available on AUR.
+
 ## What's next
 
  - Group search for ldap not supporting `memberof` attribute ;
