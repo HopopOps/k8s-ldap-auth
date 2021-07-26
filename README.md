@@ -171,6 +171,7 @@ AUTHOR:
 COMMANDS:
    server, s, serve       start the authentication server
    authenticate, a, auth  perform an authentication through a /auth endpoint
+   reset, r               delete the cached ExecCredential to force authentication at next call
    help, h                Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:

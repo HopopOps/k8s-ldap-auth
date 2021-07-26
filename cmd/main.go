@@ -61,6 +61,7 @@ func Start() error {
 	app.Commands = []*cli.Command{
 		getServerCmd(),
 		getAuthenticationCmd(),
+		getResetCmd(),
 	}
 
 	return app.Run(os.Args)
