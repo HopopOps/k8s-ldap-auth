@@ -3,7 +3,6 @@ package types
 import (
 	"crypto/rsa"
 	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"time"
 
@@ -21,8 +20,8 @@ func NewToken(data []byte, ttl int64) *Token {
 
 	t := jwt.New()
 	t.Set(jwt.IssuedAtKey, now.Unix())
-	t.Set(jwt.ExpirationKey, now.Add(time.Duration(ttl)).Unix())
-	t.Set("user", data)
+	t.Set(jwt.ExpirationKey, now.Add(time.Duration(ttl)*time.Second).Unix())
+	t.Set("username", data)
 
 	token := &Token{
 		token: t,
@@ -49,26 +48,19 @@ func Parse(payload []byte, key *rsa.PrivateKey) (*Token, error) {
 	return token, nil
 }
 
-func (t *Token) GetUser() (*User, error) {
-	if v, ok := t.token.Get("user"); ok {
-		var user User
-
+func (t *Token) GetUsername() (string, error) {
+	if v, ok := t.token.Get("username"); ok {
 		log.Debug().Str("data", fmt.Sprintf("%v", v)).Msg("Got user data.")
 
 		data, err := base64.StdEncoding.WithPadding(base64.NoPadding).DecodeString(fmt.Sprintf("%v", v))
 		if err != nil {
-			return nil, err
+			return "", err
 		}
 
-		err = json.Unmarshal(data, &user)
-		if err != nil {
-			return nil, err
-		}
-
-		return &user, nil
+		return string(data), nil
 	}
 
-	return nil, fmt.Errorf("Could not get user attribute of jwt token")
+	return "", fmt.Errorf("Could not get username attribute of jwt token")
 }
 
 func (t *Token) IsValid() bool {

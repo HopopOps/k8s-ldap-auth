@@ -47,7 +47,20 @@ func NewInstance(ldapURL, bindDN, bindPassword, searchBase, searchScope, searchF
 	return s
 }
 
-func (s *Ldap) Search(username, password string) (*types.User, error) {
+func (s *Ldap) Authenticate(dn, password string) error {
+	l, err := ldap.DialURL(s.ldapURL)
+	if err != nil {
+		return err
+	}
+
+	defer l.Close()
+
+	// Bind as the user to verify their password
+	err = l.Bind(dn, password)
+	return err
+}
+
+func (s *Ldap) Search(username string) (*types.User, error) {
 	l, err := ldap.DialURL(s.ldapURL)
 	if err != nil {
 		return nil, err
@@ -89,15 +102,6 @@ func (s *Ldap) Search(username, password string) (*types.User, error) {
 
 	log.Debug().Msg("Research returned a result.")
 
-	// Bind as the user to verify their password
-	err = l.Bind(result.Entries[0].DN, password)
-	if err != nil {
-		return nil, err
-	}
-
-	log.Debug().Msg("Successfully bound as the user.")
-
-	// Rebinding as the read only user for any further queries is not necessary since the ldap connection will be closed.
 	user := &types.User{
 		Uid:    strings.ToLower(result.Entries[0].GetAttributeValue("uid")),
 		DN:     strings.ToLower(result.Entries[0].DN),

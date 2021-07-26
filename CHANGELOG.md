@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Server
 #### Added
 - Token longevity can now be configured (in seconds). Default to 43200 (12 hours).
-
+- Token generated now only contains uid. Groups and DN are added to the TokenReview when kube-apiserver dial k8s-ldap-auth.
 ## [1.0.0] - 2021-07-22
 ### Server
 #### Added
