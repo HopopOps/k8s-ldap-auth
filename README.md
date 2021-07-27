@@ -245,7 +245,7 @@ PLATFORM="linux/arm/v7,linux/amd64" make docker
 ## Distribution
 
 ### Docker
-A docker image of this projet is available for arm/v7, arm64/v8, amd64 at [vbouchaud/k8s-ldap-auth](https://hub.docker.com/r/vbouchaud/k8s-ldap-auth) on docker hub.
+A docker image of this projet is available for arm/v7, arm64/v8, amd64 at [vbouchaud/k8s-ldap-auth](https://hub.docker.com/r/vbouchaud/k8s-ldap-auth) on docker hub. A mirror has been setup on quay.io at [vbouchaud/k8s-ldap-auth](https://quay.io/vbouchaud/k8s-ldap-auth)
 
 ### Binary
 Binaries for the following OS and architectures are available on the release page:
