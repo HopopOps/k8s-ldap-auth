@@ -6,7 +6,7 @@ require (
 	github.com/adrg/xdg v0.3.3
 	github.com/go-ldap/ldap v3.0.3+incompatible
 	github.com/gorilla/mux v1.8.0
-	github.com/lestrrat-go/jwx v1.1.7
+	github.com/lestrrat-go/jwx v1.2.4
 	github.com/mattn/go-isatty v0.0.13
 	github.com/rs/zerolog v1.23.0
 	github.com/urfave/cli/v2 v2.3.0
