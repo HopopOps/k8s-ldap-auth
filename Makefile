@@ -15,20 +15,18 @@ ORG ?= registry.aegir.bouchaud.org
 PKG := bouchaud.org/legion/kubernetes/$(APPNAME)
 PLATFORM ?= "linux/arm/v7,linux/arm64/v8,linux/amd64"
 GO ?= go
+SED ?= sed
 GOFMT ?= gofmt -s
 GOFILES := $(shell find . -name "*.go" -type f)
-GOVERSION := $(shell go version | sed -r 's/go version go(.+)\s.+/\1/')
+GOVERSION := $(shell $(GO) version | $(SED) -r 's/go version go(.+)\s.+/\1/')
 PACKAGES ?= $(shell $(GO) list ./...)
 
 # This version-strategy uses git tags to set the version string
 GIT_TAG := $(shell git describe --tags --always --dirty || echo unsupported)
 GIT_COMMIT := $(shell git rev-parse --short HEAD || echo unsupported)
 BUILDTIME := $(shell date -u +"%FT%TZ%:z")
-ARCH := $(shell uname -m)
 TAG ?= $(GIT_TAG)
 VERSION ?= $(GIT_TAG)
-
-CURRENT_PATH := $(shell pwd)
 
 .PHONY: fmt fmt-check vet test test-coverage cover install hooks docker tag push help clean dev
 default: help
