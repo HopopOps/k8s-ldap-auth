@@ -2,3 +2,5 @@
 /deploy
 k8s-ldap-auth*
 /.env*
+/distribution
+dist/
