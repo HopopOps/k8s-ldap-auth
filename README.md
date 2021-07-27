@@ -268,6 +268,15 @@ Binaries for the following OS and architectures are available on the release pag
 
 [![AUR last modified](https://img.shields.io/aur/last-modified/k8s-ldap-auth-git?label=k8s-ldap-auth-git&style=for-the-badge)](https://aur.archlinux.org/packages/k8s-ldap-auth-git/)
 
+### Darwin
+#### With `brew`
+
+`k8s-ldap-auth.rb` is not in the official repository, you have to download [the formula](https://raw.githubusercontent.com/vbouchaud/k8s-ldap-auth/master/distribution/darwin/brew/k8s-ldap-auth.rb) and then specify its path when calling brew:
+```
+% curl -O https://raw.githubusercontent.com/vbouchaud/k8s-ldap-auth/master/distribution/darwin/brew/k8s-ldap-auth.rb
+% brew install --formula ./k8s-ldap-auth.rb
+```
+
 ## What's next
 
  - Group search for ldap not supporting `memberof` attribute ;
