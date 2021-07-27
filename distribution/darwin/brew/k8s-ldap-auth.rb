@@ -1,8 +1,8 @@
 class K8sLdapAuth < Formula
   desc "Kubernetes webhook token authentication plugin implementation using ldap"
   homepage "https://github.com/vbouchaud/k8s-ldap-auth/"
-  url "https://github.com/vbouchaud/k8s-ldap-auth/archive/refs/tags/v2.0.0.tar.gz"
-  sha256 "9397ad92d6910b922cb501ef02b52a2b20f6a4f1476f62500fbdd29dae2031c6"
+  url "https://github.com/vbouchaud/k8s-ldap-auth/archive/refs/tags/v2.0.1.tar.gz"
+  sha256 "2b1dc9fe80ffa06593d981722e644c7a59805138349e08f824775200096bb58a"
   license "MPL-2.0"
 
   depends_on "go" => :build
