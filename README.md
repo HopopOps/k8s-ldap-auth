@@ -263,6 +263,10 @@ Binaries for the following OS and architectures are available on the release pag
 #### Archlinux
 [![AUR version](https://img.shields.io/aur/version/k8s-ldap-auth-bin?label=k8s-ldap-auth-bin&style=for-the-badge)](https://aur.archlinux.org/packages/k8s-ldap-auth-bin/)
 
+[![AUR version](https://img.shields.io/aur/version/k8s-ldap-auth?label=k8s-ldap-auth&style=for-the-badge)](https://aur.archlinux.org/packages/k8s-ldap-auth/)
+
+[![AUR version](https://img.shields.io/aur/version/k8s-ldap-auth-git?label=k8s-ldap-auth-git&style=for-the-badge)](https://aur.archlinux.org/packages/k8s-ldap-auth-git/)
+
 ## What's next
 
  - Group search for ldap not supporting `memberof` attribute ;

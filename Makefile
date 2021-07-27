@@ -23,11 +23,10 @@ PACKAGES ?= $(shell $(GO) list ./...)
 # This version-strategy uses git tags to set the version string
 GIT_TAG := $(shell git describe --tags --always --dirty || echo unsupported)
 GIT_COMMIT := $(shell git rev-parse --short HEAD || echo unsupported)
-GIT_BRANCH := $(shell git rev-parse --abbrev-ref HEAD 2>/dev/null)
-GIT_BRANCH_CLEAN := $(shell echo $(GIT_BRANCH) | sed -e "s/[^[:alnum:]]/-/g")
 BUILDTIME := $(shell date -u +"%FT%TZ%:z")
 ARCH := $(shell uname -m)
 TAG ?= $(GIT_TAG)
+VERSION ?= $(GIT_TAG)
 
 CURRENT_PATH := $(shell pwd)
 
@@ -84,7 +83,7 @@ docker:
 		--push \
 		--build-arg COMMITHASH="$(GIT_COMMIT)" \
 		--build-arg BUILDTIME="$(BUILDTIME)" \
-		--build-arg VERSION="$(GIT_TAG)" \
+		--build-arg VERSION="$(VERSION)" \
 		--build-arg PKG="$(PKG)" \
 		--build-arg APPNAME="$(APPNAME)" \
 		--platform $(PLATFORM) \
@@ -102,7 +101,7 @@ $(APPNAME):
 		-asmflags=-trimpath=$(CURRENT_PATH) \
 		-o $(BIN) -ldflags "\
 				-X $(PKG)/version.APPNAME=$(APPNAME) \
-				-X $(PKG)/version.VERSION=$(GIT_TAG) \
+				-X $(PKG)/version.VERSION=$(VERSION) \
 				-X $(PKG)/version.GOVERSION=$(GOVERSION) \
 				-X $(PKG)/version.BUILDTIME=$(BUILDTIME) \
 				-X $(PKG)/version.COMMITHASH=$(GIT_COMMIT) \
@@ -112,7 +111,7 @@ $(APPNAME)-dev:
 	$(GO) build \
 		-o $(BIN)-dev -ldflags "\
 				-X $(PKG)/version.APPNAME=$(APPNAME) \
-				-X $(PKG)/version.VERSION=$(GIT_TAG) \
+				-X $(PKG)/version.VERSION=$(VERSION) \
 				-X $(PKG)/version.GOVERSION=$(GOVERSION) \
 				-X $(PKG)/version.BUILDTIME=$(BUILDTIME) \
 				-X $(PKG)/version.COMMITHASH=$(GIT_COMMIT)"
