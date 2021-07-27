@@ -167,7 +167,7 @@ USAGE:
    k8s-ldap-auth [global options] command [command options] [arguments...]
 
 VERSION:
-   v2.0.0
+   v2.0.1
 
 AUTHOR:
    Vianney Bouchaud <vianney@bouchaud.org>
