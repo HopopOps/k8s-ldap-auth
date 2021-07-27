@@ -1,5 +1,8 @@
 # k8s-ldap-auth
 
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/vbouchaud/k8s-ldap-auth?style=for-the-badge)](https://github.com/vbouchaud/k8s-ldap-auth/releases/latest)
+[![License](https://img.shields.io/github/license/vbouchaud/k8s-ldap-auth?style=for-the-badge)](https://opensource.org/licenses/Apache-2.0)
+
 ## What
 
 This is a webhook token authentication plugin implementation for ldap backend inspired by Daniel Weibel article "Implementing LDAP authentication for Kubernetes" at https://itnext.io/implementing-ldap-authentication-for-kubernetes-732178ec2155
@@ -258,7 +261,7 @@ Binaries for the following OS and architectures are available on the release pag
 
 ### Linux
 #### Archlinux
-A PKGBUILD named k8s-ldap-auth-bin is available on AUR.
+[![AUR version](https://img.shields.io/aur/version/k8s-ldap-auth-bin?label=k8s-ldap-auth-bin&style=for-the-badge)](https://aur.archlinux.org/packages/k8s-ldap-auth-bin/)
 
 ## What's next
 
