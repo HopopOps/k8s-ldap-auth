@@ -100,13 +100,13 @@ func (s *Ldap) Search(username string) (*types.User, error) {
 		return nil, fmt.Errorf("Too many entries returned")
 	}
 
-	log.Debug().Msg("Research returned a result.")
-
 	user := &types.User{
 		Uid:    strings.ToLower(result.Entries[0].GetAttributeValue("uid")),
 		DN:     strings.ToLower(result.Entries[0].DN),
 		Groups: sanitize(result.Entries[0].GetAttributeValues(s.memberOfProperty)),
 	}
+
+	log.Debug().Str("uid", user.Uid).Strs("groups", user.Groups).Str("dn", user.DN).Msg("Research returned a result.")
 
 	return user, nil
 }
