@@ -97,9 +97,13 @@ clean:
 
 $(APPNAME):
 	$(GO) build \
-		-gcflags=-trimpath=$(CURRENT_PATH) \
-		-asmflags=-trimpath=$(CURRENT_PATH) \
-		-o $(BIN) -ldflags "\
+		-trimpath \
+		-buildmode=pie \
+		-mod=readonly \
+		-modcacherw \
+		-o $(BIN) \
+		-ldflags "\
+				-linkmode=external \
 				-X $(PKG)/version.APPNAME=$(APPNAME) \
 				-X $(PKG)/version.VERSION=$(VERSION) \
 				-X $(PKG)/version.GOVERSION=$(GOVERSION) \

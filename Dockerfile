@@ -11,7 +11,14 @@ COPY go.mod ./
 COPY go.sum ./
 RUN go mod download
 COPY . ./
-RUN go build -o k8s-ldap-auth -ldflags "\
+RUN go build \
+      -trimpath \
+      -buildmode=pie \
+      -mod=readonly \
+      -modcacherw \
+      -o k8s-ldap-auth \
+      -ldflags "\
+        -linkmode=external \
         -X ${PKG}/version.APPNAME=${APPNAME} \
         -X ${PKG}/version.VERSION=${VERSION} \
         -X ${PKG}/version.GOVERSION=${GOVERSION} \
