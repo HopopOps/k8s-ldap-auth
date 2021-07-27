@@ -101,7 +101,6 @@ $(APPNAME):
 		-modcacherw \
 		-o $(BIN) \
 		-ldflags "\
-				-linkmode=external \
 				-X $(PKG)/version.APPNAME=$(APPNAME) \
 				-X $(PKG)/version.VERSION=$(VERSION) \
 				-X $(PKG)/version.GOVERSION=$(GOVERSION) \
