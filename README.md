@@ -20,13 +20,56 @@ The same k8s-ldap-auth server can be used to authenticate with multiple kubernet
 
 I actually use this setup on quite a few clusters with a growing userbase.
 
-## Configuration
-
 Access rights to clusters and resources will not be implemented in this authentication hook, kubernetes RBAC will do that for you.
 
 `KUBERNETES_EXEC_INFO` is currently disregarded but might be used in future versions.
 
-### Cluster
+## Usage
+
+You can see the commands and their options with:
+```
+k8s-ldap-auth --help
+# or
+k8s-ldap-auth [command] --help
+```
+
+Pretty much all options can be set using environment variables and a few also read their values from files.
+
+### Server
+
+Create the password file for the bind-dn:
+```
+echo -n "bind_P@ssw0rd" > /etc/k8s-ldap-auth/ldap/password
+```
+
+The server can then be started with:
+```
+k8s-ldap-auth serve \
+  --ldap-host="ldaps://ldap.company.local" \
+  --bind-dn="uid=k8s-ldap-auth,ou=services,ou=company,ou=local" \
+  --search-base="ou=people,ou=company,ou=local"
+```
+
+Note that if the server do not know of any key pair it will create one at launch but will not persist it.
+If you want your jwt tokens to be valid accross server instances: after restarts or behind a load-balancer, you should provide a key pair.
+
+Key pair can be created with openssl:
+```
+openssl genrsa -out key.pem 4096
+openssl rsa -in key.pem -outform PEM -pubout -out public.pem
+```
+
+Then, the server can be started with:
+```sh
+k8s-ldap-auth serve \
+  --ldap-host="ldaps://ldap.company.local" \
+  --bind-dn="uid=k8s-ldap-auth,ou=services,ou=company,ou=local" \
+  --search-base="ou=people,ou=company,ou=local" \
+  --private-key-file="path/to/key.pem"
+  --public-key-file="path/to/public.pem"
+```
+
+Now for the cluster configuration.
 
 In the following example, I use the api version `client.authentication.k8s.io/v1beta1`. Feel free to put another better suited for your need.
 
@@ -39,7 +82,7 @@ kind: Config
 clusters:
   - name: authentication-server
     cluster:
-      server: https://k8s-ldap-auth/token
+      server: https://<server address>/token
 
 users:
   - name: kube-apiserver
@@ -53,7 +96,7 @@ contexts:
 current-context: kube-apiserver@authentication-server
 ```
 
-#### New cluster
+##### New cluster
 
 If you're creating a new cluster with kubeadm, you can add the following to your init configuration file:
 ```yml
@@ -72,7 +115,7 @@ apiServer:
     pathType: File
 ```
 
-#### Existing cluster
+##### Existing cluster
 
 If the cluster was created with kubeadm, edit the kubeadm configuration stored in the namespace `kube-system` to add the configuration from above: `kubectl --namespace kube-system edit configmaps kubeadm-config`
 Editing this configuration does not actually update your api-server. It will however be used if you need to add a new control-plane with `kubeadm join`.
@@ -104,17 +147,23 @@ spec:
     name: webhook-config
 ```
 
-### Client
+#### Client
 
-The same user definition can be used on different clusters if they share this authentication hook.
+Even though it's not specified anywhere, the `--password` option and the equivalent `$PASSWORD` environment variable as well as the configfile containing a password were added for convenience sake, e.g. when running in an automated fashion, etc. If not provided, it will be asked at runtime. The same can be said for the `--user` options and `$USER` environment variables.
 
+Authentication can be achieved with the following command you can execute to test your installation:
+```
+k8s-ldap-auth auth --endpoint="https://<server address>/auth"
+```
+
+You can now configure `kubectl` to use `k8s-ldap-auth` to authenticate to clusters by editing your kube config file and adding the following user:
 ```yml
 users:
   - name: my-user
     user:
       exec:
         # In the following, we assume a binary called `k8s-ldap-auth` is
-        # available in the path. You can instead put a path to the binary.
+        # available in the path. You can instead put the full path to the binary.
         # Windows paths do work with kubectl so the following would also work:
         # `C:\users\foo\Documents\k8s-ldap-auth.exe`.
         command: k8s-ldap-auth
@@ -157,75 +206,55 @@ users:
         provideClusterInfo: false
 ```
 
-## Usage
-
+This user can be used by setting the `--user` attribute for `kubectl`:
 ```
-NAME:
-   k8s-ldap-auth - A client/server for kubernetes webhook authentication.
-
-USAGE:
-   k8s-ldap-auth [global options] command [command options] [arguments...]
-
-VERSION:
-   v2.0.1
-
-AUTHOR:
-   Vianney Bouchaud <vianney@bouchaud.org>
-
-COMMANDS:
-   server, s, serve       start the authentication server
-   authenticate, a, auth  perform an authentication through a /auth endpoint
-   reset, r               delete the cached ExecCredential to force authentication at next call
-   help, h                Shows a list of commands or help for one command
-
-GLOBAL OPTIONS:
-   --verbose LEVEL  The verbosity LEVEL - (rs/zerolog#Level values). (default: 3) [$VERBOSE]
-   --help, -h       show help (default: false)
-   --version, -v    print the version (default: false)
+kubectl --user my-user get nodes
 ```
 
-#### Server
-```
-NAME:
-   k8s-ldap-auth server - start the authentication server
+You can also create contexts with it:
+```yaml
+contexts:
+  - name: context1
+    context:
+      cluster: cluster1
+      user: my-user
+  - name: context2
+    context:
+      cluster: cluster2
+      user: my-user
 
-USAGE:
-   k8s-ldap-auth server [command options] [arguments...]
-
-OPTIONS:
-   --host HOST                    The HOST the server will listen on. [$HOST]
-   --port PORT                    The PORT the server will listen to. (default: 3000) [$PORT]
-   --ldap-host HOST               The ldap HOST (and scheme) the server will authenticate against. (default: "ldap://localhost") [$LDAP_ADDR]
-   --bind-dn DN                   The service account DN to do the ldap search. [$LDAP_BINDDN]
-   --bind-credentials PASSWORD    The service account PASSWORD to do the ldap search, can be located in '/etc/k8s-ldap-auth/ldap/password'. [$LDAP_BINDCREDENTIALS]
-   --search-base DN               The DN where the ldap search will take place. [$LDAP_USER_SEARCHBASE]
-   --search-filter FILTER         The FILTER to select users. (default: "(&(objectClass=inetOrgPerson)(uid=%s))") [$LDAP_USER_SEARCHFILTER]
-   --member-of-property PROPERTY  The PROPERTY where group entitlements are located. (default: "ismemberof") [$LDAP_USER_MEMBEROFPROPERTY]
-   --search-attributes PROPERTY   Repeatable. User PROPERTY to fetch. Everything beside 'uid', 'dn' (mandatory fields) will be stored in extra values in the UserInfo object. (default: "uid", "dn") [$LDAP_USER_SEARCHATTR]
-   --search-scope SCOPE           The SCOPE of the search. Can take to values base object: 'base', single level: 'single' or whole subtree: 'sub'. (default: "sub") [$LDAP_USER_SEARCHSCOPE]
-   --private-key-file PATH        The PATH to the private key file [$PRIVATE_KEY_FILE]
-   --public-key-file PATH         The PATH to the public key file [$PUBLIC_KEY_FILE]
-   --token-ttl TTL                The TTL for newly generated tokens, in seconds (default: 43200) [$TTL]
-   --help, -h                     show help (default: false)
+current-context: context1
 ```
 
-#### Client
-
-Even though it's not specified anywhere, the `--password` option and the equivalent `$PASSWORD` environment variable as well as the configfile containing a password were added for convenience sake, e.g. when running in an automated fashion, etc. If not provided, it will be asked at runtime. The same can be said for `--user` options and `$USER` environment variables.
-
+And then:
 ```
-NAME:
-   k8s-ldap-auth authenticate - perform an authentication through a /auth endpoint
-
-USAGE:
-   k8s-ldap-auth authenticate [command options] [arguments...]
-
-OPTIONS:
-   --endpoint URI       The full URI the client will authenticate against.
-   --user USER          The USER the client will connect as. [$USER]
-   --password PASSWORD  The PASSWORD the client will connect with, can be located in '$XDG_CONFIG_HOME/k8s-ldap-auth/password'. [$PASSWORD]
-   --help, -h           show help (default: false)
+kubectl --context context2 get nodes
+kubectl get nodes
 ```
+
+### RBAC
+Before you can actually get some result, you will have to upload some rolebindings to the cluster. As stated before, `k8s-ldap-auth` provides the apiserver with an ExecCredential containing both LDAP user uid and groups so both can be used in ClusterRoleBindings and RoleBindings.
+
+Eg. If I want to give `cluster-admin` rights to the user `someuser` and to the group `somegroup`, I can create a ClusterRoleBinding as following:
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: custom-cluster-admininistrators
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: somegroup
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: someuser
+```
+
+Note: Kubernetes comes with some basic [predefined roles](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles) for you to use.
 
 ## Build
 
@@ -249,7 +278,7 @@ PLATFORM="linux/arm/v7,linux/amd64" make docker
 ## Distribution
 
 ### Docker
-A docker image of this projet is available for arm/v7, arm64/v8, amd64 at [vbouchaud/k8s-ldap-auth](https://hub.docker.com/r/vbouchaud/k8s-ldap-auth) on docker hub. A mirror has been setup on quay.io at [vbouchaud/k8s-ldap-auth](https://quay.io/vbouchaud/k8s-ldap-auth)
+Docker images of this projet are available for arm/v7, arm64/v8 and amd64 at [vbouchaud/k8s-ldap-auth](https://hub.docker.com/r/vbouchaud/k8s-ldap-auth) on docker hub and on quay.io at [vbouchaud/k8s-ldap-auth](https://quay.io/vbouchaud/k8s-ldap-auth).
 
 ### Binary
 Binaries for the following OS and architectures are available on the release page:
