@@ -6,7 +6,7 @@
 
 ## What
 
-This is a webhook token authentication plugin implementation for ldap backend inspired by Daniel Weibel article "Implementing LDAP authentication for Kubernetes" at https://itnext.io/implementing-ldap-authentication-for-kubernetes-732178ec2155
+This is a webhook token authentication plugin implementation backed by LDAP.
 
 k8s-ldap-auth is released as a binary containing both client and server.
 
@@ -305,6 +305,10 @@ Binaries for the following OS and architectures are available on the release pag
 % curl -O https://raw.githubusercontent.com/vbouchaud/k8s-ldap-auth/master/distribution/darwin/brew/k8s-ldap-auth.rb
 % brew install --formula ./k8s-ldap-auth.rb
 ```
+
+## Inspiration
+
+I originaly started this project after reading Daniel Weibel's article "Implementing LDAP authentication for Kubernetes" (https://learnk8s.io/kubernetes-custom-authentication or https://itnext.io/implementing-ldap-authentication-for-kubernetes-732178ec2155).
 
 ## What's next
 
