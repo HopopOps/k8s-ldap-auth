@@ -1,7 +1,7 @@
 package main
 
 import (
-	"bouchaud.org/legion/kubernetes/k8s-ldap-auth/cmd"
+	"vbouchaud/k8s-ldap-auth/cmd"
 )
 
 func main() {

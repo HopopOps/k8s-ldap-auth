@@ -5,7 +5,7 @@ import (
 
 	"github.com/urfave/cli/v2"
 
-	"bouchaud.org/legion/kubernetes/k8s-ldap-auth/client"
+	"vbouchaud/k8s-ldap-auth/client"
 )
 
 func getResetCmd() *cli.Command {

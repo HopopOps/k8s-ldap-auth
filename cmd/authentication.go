@@ -7,7 +7,7 @@ import (
 	"github.com/adrg/xdg"
 	"github.com/urfave/cli/v2"
 
-	"bouchaud.org/legion/kubernetes/k8s-ldap-auth/client"
+	"vbouchaud/k8s-ldap-auth/client"
 )
 
 func getAuthenticationCmd() *cli.Command {

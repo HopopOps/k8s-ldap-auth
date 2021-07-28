@@ -8,7 +8,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
 
-	"bouchaud.org/legion/kubernetes/k8s-ldap-auth/version"
+	"vbouchaud/k8s-ldap-auth/version"
 )
 
 type action func(*cli.Context) error

@@ -13,7 +13,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"golang.org/x/term"
 
-	"bouchaud.org/legion/kubernetes/k8s-ldap-auth/types"
+	"vbouchaud/k8s-ldap-auth/types"
 )
 
 func readData(readLine func(screen io.ReadWriter) (string, error)) (string, error) {

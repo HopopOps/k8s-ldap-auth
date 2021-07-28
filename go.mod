@@ -1,4 +1,4 @@
-module bouchaud.org/legion/kubernetes/k8s-ldap-auth
+module vbouchaud/k8s-ldap-auth
 
 go 1.15
 

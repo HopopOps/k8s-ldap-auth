@@ -8,7 +8,7 @@ import (
 
 	"github.com/rs/zerolog/log"
 
-	"bouchaud.org/legion/kubernetes/k8s-ldap-auth/types"
+	"vbouchaud/k8s-ldap-auth/types"
 )
 
 func Auth(addr, user, pass string) error {

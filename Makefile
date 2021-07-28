@@ -12,7 +12,7 @@ APPNAME := k8s-ldap-auth
 BIN ?= $(APPNAME)
 
 ORG ?= registry.aegir.bouchaud.org
-PKG := bouchaud.org/legion/kubernetes/$(APPNAME)
+PKG := vbouchaud/$(APPNAME)
 PLATFORM ?= "linux/arm/v7,linux/arm64/v8,linux/amd64"
 GO ?= go
 SED ?= sed
