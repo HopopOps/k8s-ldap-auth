@@ -302,8 +302,8 @@ Binaries for the following OS and architectures are available on the release pag
 
 `k8s-ldap-auth.rb` is not in the official repository, you have to download [the formula](https://raw.githubusercontent.com/vbouchaud/k8s-ldap-auth/master/distribution/darwin/brew/k8s-ldap-auth.rb) and then specify its path when calling brew:
 ```
-% curl -O https://raw.githubusercontent.com/vbouchaud/k8s-ldap-auth/master/distribution/darwin/brew/k8s-ldap-auth.rb
-% brew install --formula ./k8s-ldap-auth.rb
+curl -O https://raw.githubusercontent.com/vbouchaud/k8s-ldap-auth/master/distribution/darwin/brew/k8s-ldap-auth.rb
+brew install --formula ./k8s-ldap-auth.rb
 ```
 
 ## Inspiration
