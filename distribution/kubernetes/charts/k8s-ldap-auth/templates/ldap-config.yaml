@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: {{ include "k8s-ldap-auth.fullname" . }}-ldap-config
+  labels:
+    {{- include "k8s-ldap-auth.labels" . | nindent 4 }}
+data:
+  ldap-binddn: "{{ .Values.config.ldap.bindDn | b64enc }}"
+  ldap-bindcredentials: "{{ .Values.config.ldap.bindPassword | b64enc }}"

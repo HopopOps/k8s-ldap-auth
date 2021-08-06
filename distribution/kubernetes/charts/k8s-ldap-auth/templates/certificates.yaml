@@ -1,0 +1,12 @@
+{{- if and (.Values.config.keys.privateKeyData) (.Values.config.keys.publicKeyData) }}
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: {{ include "k8s-ldap-auth.fullname" . }}-certs
+  labels:
+    {{- include "k8s-ldap-auth.labels" . | nindent 4 }}
+data:
+  key.pem: "{{ .Values.config.keys.privateKeyData | b64enc }}"
+  public.pem: "{{ .Values.config.keys.publicKeyData | b64enc }}"
+{{- end }}

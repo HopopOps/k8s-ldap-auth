@@ -309,7 +309,6 @@ PLATFORM="linux/arm/v7,linux/amd64" make docker
 `PLATFORM` defaults to `linux/arm/v7,linux/arm64/v8,linux/amd64`
 
 ## Distribution
-
 ### Docker
 Docker images of this projet are available for arm/v7, arm64/v8 and amd64 at [vbouchaud/k8s-ldap-auth](https://hub.docker.com/r/vbouchaud/k8s-ldap-auth) on docker hub and on quay.io at [vbouchaud/k8s-ldap-auth](https://quay.io/vbouchaud/k8s-ldap-auth).
 
@@ -332,18 +331,18 @@ Binaries for the following OS and architectures are available on the release pag
 
 ### Darwin
 #### With `brew`
-
 `k8s-ldap-auth.rb` is not in the official repository, you have to download [the formula](https://raw.githubusercontent.com/vbouchaud/k8s-ldap-auth/master/distribution/darwin/brew/k8s-ldap-auth.rb) and then specify its path when calling brew:
 ```
 curl -O https://raw.githubusercontent.com/vbouchaud/k8s-ldap-auth/master/distribution/darwin/brew/k8s-ldap-auth.rb
 brew install --formula ./k8s-ldap-auth.rb
 ```
 
-## Inspiration
+### Kubernetes
+#### Helm Chart
+A [chart](https://github.com/vbouchaud/k8s-ldap-auth/tree/master/distribution/kubernetes/charts/k8s-ldap-auth/) is located in this repository. Please follow its `README.md` for further information.
 
+## Inspiration
 I originaly started this project after reading Daniel Weibel's article "Implementing LDAP authentication for Kubernetes" (https://learnk8s.io/kubernetes-custom-authentication or https://itnext.io/implementing-ldap-authentication-for-kubernetes-732178ec2155).
 
 ## What's next
-
  - Group search for ldap not supporting `memberof` attribute ;
- - Helm chart ;
