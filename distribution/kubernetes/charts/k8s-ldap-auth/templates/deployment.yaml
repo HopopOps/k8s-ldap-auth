@@ -1,0 +1,135 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "k8s-ldap-auth.fullname" . }}
+  labels:
+    {{- include "k8s-ldap-auth.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "k8s-ldap-auth.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "k8s-ldap-auth.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "k8s-ldap-auth.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /bin/sh
+          args:
+            - -c
+            - k8s-ldap-auth serve
+          env:
+            - name: HOST
+              value: "0.0.0.0"
+            - name: PORT
+              value: "3000"
+
+            # Mandatory fields:
+            - name: LDAP_ADDR
+              value: "{{ .Values.config.ldap.address }}"
+            - name: LDAP_USER_SEARCHBASE
+              value: "{{ .Values.config.ldap.user.searchBase }}"
+            - name: LDAP_BINDDN
+              valueFrom:
+                secretKeyRef:
+                  key: ldap-binddn
+                  name: {{ include "k8s-ldap-auth.fullname" . }}-ldap-config
+            - name: LDAP_BINDCREDENTIALS
+              valueFrom:
+                secretKeyRef:
+                  key: ldap-bindcredentials
+                  name: {{ include "k8s-ldap-auth.fullname" . }}-ldap-config
+
+            # Optional configuration
+            {{- if .Values.config.ldap.user.searchFilter }}
+            - name: LDAP_USER_SEARCHFILTER
+              value: "{{ .Values.config.ldap.user.searchFilter }}"
+            {{- end }}
+            {{- if .Values.config.ldap.user.searchScope }}
+            - name: LDAP_USER_SEARCHSCOPE
+              value: "{{ .Values.config.ldap.user.searchScope }}"
+            {{- end }}
+            {{- if .Values.config.ldap.user.memberofProperty }}
+            - name: LDAP_USER_MEMBEROFPROPERTY
+              value: "{{ .Values.config.ldap.user.memberofProperty }}"
+            {{- end }}
+            {{- if .Values.config.ldap.user.usernameProperty }}
+            - name: LDAP_USER_USERNAMEPROPERTY
+              value: "{{ .Values.config.ldap.user.usernameProperty }}"
+            {{- end }}
+            {{- if .Values.config.ldap.user.extraProperties }}
+            - name: LDAP_USER_EXTRAATTR
+              value: "{{ .Values.config.ldap.user.extraProperties }}"
+            {{- end }}
+            {{- if .Values.config.token.ttl }}
+            - name: TTL
+              value: "{{ .Values.config.token.ttl }}"
+            {{- end }}
+
+            {{- if and (.Values.config.keys.privateKeyData) (.Values.config.keys.publicKeyData) }}
+            - name: PRIVATE_KEY_FILE
+              value: "/opt/auth/key.pem"
+            - name: PUBLIC_KEY_FILE
+              value: "/opt/auth/public.pem"
+            {{- end }}
+
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+
+          {{- if and (.Values.config.keys.privateKeyData) (.Values.config.keys.publicKeyData) }}
+          volumeMounts:
+            - mountPath: /opt/auth
+              name: certs
+          {{- end }}
+
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if and (.Values.config.keys.privateKeyData) (.Values.config.keys.publicKeyData) }}
+      volumes:
+        - name: certs
+          secret:
+            defaultMode: 420
+            secretName: {{ include "k8s-ldap-auth.fullname" . }}-certs
+      {{- end }}
