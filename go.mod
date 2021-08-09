@@ -12,7 +12,7 @@ require (
 	github.com/urfave/cli/v2 v2.3.0
 	golang.org/x/term v0.0.0-20210406210042-72f3dc4e9b72
 	gopkg.in/asn1-ber.v1 v1.0.0-20181015200546-f715ec2f112d // indirect
-	k8s.io/api v0.21.3
-	k8s.io/apimachinery v0.21.3
-	k8s.io/client-go v0.21.3
+	k8s.io/api v0.22.0
+	k8s.io/apimachinery v0.22.0
+	k8s.io/client-go v0.22.0
 )
