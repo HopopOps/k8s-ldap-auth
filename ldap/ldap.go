@@ -8,7 +8,7 @@ import (
 	"github.com/go-ldap/ldap"
 	"github.com/rs/zerolog/log"
 
-	"vbouchaud/k8s-ldap-auth/types"
+	auth "k8s.io/api/authentication/v1"
 )
 
 type Ldap struct {
@@ -18,7 +18,10 @@ type Ldap struct {
 	searchBase       string
 	searchScope      string
 	searchFilter     string
-	memberOfProperty string
+	memberofProperty string
+	usernameProperty string
+	uidProperty      string
+	extraAttributes  []string
 	searchAttributes []string
 }
 
@@ -32,7 +35,19 @@ func sanitize(a []string) []string {
 	return res
 }
 
-func NewInstance(ldapURL, bindDN, bindPassword, searchBase, searchScope, searchFilter, memberOfProperty string, searchAttributes []string) *Ldap {
+func NewInstance(
+	ldapURL,
+	bindDN,
+	bindPassword,
+	searchBase,
+	searchScope,
+	searchFilter,
+	memberofProperty,
+	usernameProperty,
+	uidProperty string,
+	extraAttributes,
+	searchAttributes []string,
+) *Ldap {
 	s := &Ldap{
 		ldapURL:          ldapURL,
 		bindDN:           bindDN,
@@ -40,7 +55,10 @@ func NewInstance(ldapURL, bindDN, bindPassword, searchBase, searchScope, searchF
 		searchBase:       searchBase,
 		searchScope:      searchScope,
 		searchFilter:     searchFilter,
-		memberOfProperty: memberOfProperty,
+		memberofProperty: memberofProperty,
+		usernameProperty: usernameProperty,
+		uidProperty:      uidProperty,
+		extraAttributes:  extraAttributes,
 		searchAttributes: searchAttributes,
 	}
 
@@ -60,7 +78,7 @@ func (s *Ldap) Authenticate(dn, password string) error {
 	return err
 }
 
-func (s *Ldap) Search(username string) (*types.User, error) {
+func (s *Ldap) Search(username string) (*auth.UserInfo, error) {
 	l, err := ldap.DialURL(s.ldapURL)
 	if err != nil {
 		return nil, err
@@ -100,13 +118,20 @@ func (s *Ldap) Search(username string) (*types.User, error) {
 		return nil, fmt.Errorf("Too many entries returned")
 	}
 
-	user := &types.User{
-		Uid:    strings.ToLower(result.Entries[0].GetAttributeValue("uid")),
-		DN:     strings.ToLower(result.Entries[0].DN),
-		Groups: sanitize(result.Entries[0].GetAttributeValues(s.memberOfProperty)),
+	var extra map[string]auth.ExtraValue
+
+	for _, item := range s.extraAttributes {
+		extra[item] = result.Entries[0].GetAttributeValues(item)
 	}
 
-	log.Debug().Str("uid", user.Uid).Strs("groups", user.Groups).Str("dn", user.DN).Msg("Research returned a result.")
+	user := &auth.UserInfo{
+		UID:      strings.ToLower(result.Entries[0].GetAttributeValue(s.uidProperty)),
+		Username: strings.ToLower(result.Entries[0].GetAttributeValue(s.usernameProperty)),
+		Groups:   sanitize(result.Entries[0].GetAttributeValues(s.memberofProperty)),
+		Extra:    extra,
+	}
+
+	log.Debug().Str("uid", user.UID).Strs("groups", user.Groups).Str("username", user.Username).Msg("Research returned a result.")
 
 	return user, nil
 }

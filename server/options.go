@@ -15,9 +15,31 @@ import (
 type Option func(*Instance) error
 
 // WithLdap bind a ldap object to a server instance
-func WithLdap(ldapURL, bindDN, bindPassword, searchBase, searchScope, searchFilter, memberOfProperty string, searchAttributes []string) Option {
+func WithLdap(
+	ldapURL,
+	bindDN,
+	bindPassword,
+	searchBase,
+	searchScope,
+	searchFilter,
+	memberofProperty,
+	usernameProperty,
+	uidProperty string,
+	extraAttributes []string) Option {
 	return func(i *Instance) error {
-		i.l = ldap.NewInstance(ldapURL, bindDN, bindPassword, searchBase, searchScope, searchFilter, memberOfProperty, searchAttributes)
+		i.l = ldap.NewInstance(
+			ldapURL,
+			bindDN,
+			bindPassword,
+			searchBase,
+			searchScope,
+			searchFilter,
+			memberofProperty,
+			usernameProperty,
+			uidProperty,
+			extraAttributes,
+			append(extraAttributes, memberofProperty, usernameProperty, uidProperty),
+		)
 
 		return nil
 	}

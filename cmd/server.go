@@ -64,16 +64,27 @@ func getServerCmd() *cli.Command {
 				Usage:   "The `FILTER` to select users.",
 			},
 			&cli.StringFlag{
-				Name:    "member-of-property",
+				Name:    "memberof-property",
 				Value:   "ismemberof",
 				EnvVars: []string{"LDAP_USER_MEMBEROFPROPERTY"},
-				Usage:   "The `PROPERTY` where group entitlements are located.",
+				Usage:   "The `PROPERTY` that will be used to fetch groups. Usually memberof or ismemberof.",
+			},
+			&cli.StringFlag{
+				Name:    "username-property",
+				Value:   "uid",
+				EnvVars: []string{"LDAP_USER_USERNAMEPROPERTY"},
+				Usage:   "The `PROPERTY` that will be used as username in the TokenReview.",
+			},
+			&cli.StringFlag{
+				Name:    "uid-property",
+				Value:   "dn",
+				EnvVars: []string{"LDAP_USER_UIDPROPERTY"},
+				Usage:   "The `PROPERTY` that will be used as uid in the TokenReview.",
 			},
 			&cli.StringSliceFlag{
-				Name:    "search-attributes",
-				Value:   cli.NewStringSlice("uid", "dn"),
-				EnvVars: []string{"LDAP_USER_SEARCHATTR"},
-				Usage:   "Repeatable. User `PROPERTY` to fetch. Everything beside 'uid', 'dn' (mandatory fields) will be stored in extra values in the UserInfo object.",
+				Name:    "extra-attributes",
+				EnvVars: []string{"LDAP_USER_EXTRAATTR"},
+				Usage:   "Repeatable. User `PROPERTY` to fetch. Those will be stored in extra values in the UserInfo object.",
 			},
 			&cli.StringFlag{
 				Name:    "search-scope",
@@ -112,7 +123,9 @@ func getServerCmd() *cli.Command {
 				searchScope      = c.String("search-scope")
 				searchFilter     = c.String("search-filter")
 				searchAttributes = c.StringSlice("search-attributes")
-				memberOfProperty = c.String("member-of-property")
+				memberofProperty = c.String("memberof-property")
+				usernameProperty = c.String("username-property")
+				uidProperty      = c.String("uid-property")
 
 				privateKeyFile = c.String("private-key-file")
 				publicKeyFile  = c.String("public-key-file")
@@ -130,8 +143,10 @@ func getServerCmd() *cli.Command {
 					searchBase,
 					searchScope,
 					searchFilter,
-					memberOfProperty,
-					append(searchAttributes, memberOfProperty),
+					memberofProperty,
+					usernameProperty,
+					uidProperty,
+					searchAttributes,
 				),
 				server.WithAccessLogs(),
 				server.WithKey(

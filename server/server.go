@@ -104,7 +104,7 @@ func (s *Instance) authenticate() http.HandlerFunc {
 			return
 		}
 
-		err = s.l.Authenticate(user.DN, credentials.Password)
+		err = s.l.Authenticate(credentials.Username, credentials.Password)
 		if err != nil {
 			writeExecCredentialError(res, ErrUnauthorized)
 			return
@@ -112,7 +112,7 @@ func (s *Instance) authenticate() http.HandlerFunc {
 
 		log.Debug().Str("username", credentials.Username).Msg("Successfully authenticated.")
 
-		token := types.NewToken([]byte(user.Uid), s.ttl)
+		token := types.NewToken([]byte(user.UID), s.ttl)
 		tokenData, err := token.Payload(s.k)
 		if err != nil {
 			writeExecCredentialError(res, ErrServerError)
@@ -208,11 +208,7 @@ func (s *Instance) validate() http.HandlerFunc {
 			log.Debug().Msg("Got user from token.")
 
 			tr.Status.Authenticated = true
-			tr.Status.User = auth.UserInfo{
-				Username: user.Uid,
-				UID:      user.DN,
-				Groups:   user.Groups,
-			}
+			tr.Status.User = *user
 		}
 
 		res.Header().Set(ContentTypeHeader, ContentTypeJSON)
