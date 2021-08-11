@@ -1,5 +1,5 @@
 ---
-name: Release Docker Images
+name: Release
 
 on:
   push:
@@ -8,6 +8,7 @@ on:
 
 jobs:
   docker:
+    name: Release Docker Images
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -72,7 +73,7 @@ jobs:
           context: .
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm/v7,linux/arm64
-          push: ${{ github.event_name != 'pull_request' }}
+          push: true
           tags: ${{ steps.prep.outputs.tags }}
           build-args: |
             APP_NAME=${{ secrets.APP_NAME }}
