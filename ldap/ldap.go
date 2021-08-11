@@ -2,7 +2,6 @@ package ldap
 
 import (
 	"fmt"
-	"regexp"
 	"strings"
 
 	"github.com/go-ldap/ldap"
@@ -29,7 +28,7 @@ func sanitize(a []string) []string {
 	var res []string
 
 	for _, item := range a {
-		res = append(res, regexp.MustCompile(`^cn=([a-z0-9\-]+)`).FindStringSubmatch(strings.ToLower(item))[1])
+		res = append(res, strings.ToLower(item))
 	}
 
 	return res

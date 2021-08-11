@@ -233,9 +233,28 @@ kubectl get nodes
 ```
 
 ### RBAC
-Before you can actually get some result, you will have to upload some rolebindings to the cluster. As stated before, `k8s-ldap-auth` provides the apiserver with an ExecCredential containing both LDAP user uid and groups so both can be used in ClusterRoleBindings and RoleBindings.
+Before you can actually get some result, you will have to upload some rolebindings to the cluster. As stated before, `k8s-ldap-auth` provides the apiserver with an ExecCredential containing both LDAP username and groups so both can be used in ClusterRoleBindings and RoleBindings.
 
-Eg. If I want to give `cluster-admin` rights to the user `someuser` and to the group `somegroup`, I can create a ClusterRoleBinding as following:
+Beware: group DNs, username and user id are all set to lowercase in the TokenReview.
+
+#### Example
+
+Given the following ldap users:
+
+```
+# User Alice
+dn: uid=alice,ou=people,ou=company,ou=local
+ismemberof: cn=somegroup,ou=groups,ou=company,ou=local
+
+# User Bob
+dn: uid=bob,ou=people,ou=company,ou=local
+ismemberof: cn=somegroup,ou=groups,ou=company,ou=local
+
+# User Carol
+dn: uid=carol,ou=people,ou=company,ou=local
+```
+
+If I want to bind `cluster-admin` ClusterRole to the user `carol`, I can create a ClusterRoleBinding as following:
 ```yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -247,11 +266,25 @@ roleRef:
   name: cluster-admin
 subjects:
 - apiGroup: rbac.authorization.k8s.io
-  kind: Group
-  name: somegroup
-- apiGroup: rbac.authorization.k8s.io
   kind: User
-  name: someuser
+  name: carol
+```
+
+Let's say I want to bind the `view` ClusterRole so that all user in the group `somegroup` will have view access to a given namespace, I can create a RoleBinding such as:
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: namespace-users
+  namespace: somenamespace
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: view
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: cn=somegroup,ou=groups,ou=company,ou=local
 ```
 
 Note: Kubernetes comes with some basic [predefined roles](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles) for you to use.

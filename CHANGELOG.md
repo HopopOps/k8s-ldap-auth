@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Changed
 - Parameter `--member-of-property` is now `--memberof-property` (style consistency change)
+- TokenReview user won't contain a list of group cn only anymore but their full dn to prevent name collision
 
 ### Client
 #### Changed
