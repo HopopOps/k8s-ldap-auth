@@ -28,11 +28,11 @@ func getCachedToken() []byte {
 }
 
 func refreshCache(data []byte) error {
-	if err := os.MkdirAll(GetCacheDirPath(), 0750); err != nil {
+	if err := os.MkdirAll(GetCacheDirPath(), 0700); err != nil {
 		return err
 	}
 
-	if err := ioutil.WriteFile(GetCacheFilePath(), data, 0640); err != nil {
+	if err := ioutil.WriteFile(GetCacheFilePath(), data, 0600); err != nil {
 		return err
 	}
 

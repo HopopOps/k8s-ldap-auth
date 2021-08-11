@@ -11,7 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - User UID and username properties mapping with ldap can now be set with specific parameters or environment variable.
 
 #### Changed
-- parameter `--member-of-property` is now `--memberof-property` (style consistency change)
+- Parameter `--member-of-property` is now `--memberof-property` (style consistency change)
+
+### Client
+#### Changed
+- Cache file and folder containing the ExecCredential are now only readable by the owner.
 
 ## [2.0.1] - 2021-07-27
 ### Common
