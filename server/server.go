@@ -66,11 +66,7 @@ func writeExecCredentialError(res http.ResponseWriter, s *ServerError) {
 	res.WriteHeader(s.s)
 
 	ec := client.ExecCredential{
-		Spec: client.ExecCredentialSpec{
-			// Response: &client.Response{
-			//		Code: s.s,
-			// },
-		},
+		Spec: client.ExecCredentialSpec{},
 	}
 
 	res.Header().Set(ContentTypeHeader, ContentTypeJSON)
