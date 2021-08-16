@@ -1,8 +1,10 @@
 ---
-name: Review PR
+name: Review Dockerfile Changes
 
 on:
-  - pull_request
+  pull_request:
+    paths:
+      - Dockerfile
 
 jobs:
   hadolint:

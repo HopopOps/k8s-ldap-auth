@@ -1,0 +1,54 @@
+---
+name: Review Code Changes
+
+on:
+  pull_request:
+    paths:
+      - cmd/**.go
+      - client/**.go
+      - server/**.go
+      - ldap/**.go
+      - server/**.go
+      - version/**.go
+      - types/**.go
+      - go.mod
+      - go.sum
+      - main.go
+
+jobs:
+  build:
+    name: Build project
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go:
+          - 1.14
+          - 1.15
+          - 1.16
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Prepare
+        id: prep
+        run: |
+          echo ::set-output name=buildtime::$(date -u +'%FT%TZ%:z')
+      - name: Set up Go
+        uses: actions/setup-go@v2
+      - name: Build
+        run: |-
+          go build \
+            -trimpath \
+            -buildmode=pie \
+            -mod=readonly \
+            -modcacherw \
+            -o ${{ secrets.APP_NAME }} \
+            -ldflags "\
+              -X ${{ github.repository }}/version.APPNAME=${{ secrets.APP_NAME }} \
+              -X ${{ github.repository }}/version.VERSION=latest
+              -X ${{ github.repository }}/version.GOVERSION=${{ matrix.go }} \
+              -X ${{ github.repository }}/version.BUILDTIME=${{ steps.prep.outputs.buildtime }} \
+              -X ${{ github.repository }}/version.COMMITHASH=${{ github.sha }} \
+              -s -w"
+      - name: Verify
+        run: |-
+          ./${{ secrets.APP_NAME }} --version
