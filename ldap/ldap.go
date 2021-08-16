@@ -19,7 +19,6 @@ type Ldap struct {
 	searchFilter     string
 	memberofProperty string
 	usernameProperty string
-	uidProperty      string
 	extraAttributes  []string
 	searchAttributes []string
 }
@@ -42,8 +41,7 @@ func NewInstance(
 	searchScope,
 	searchFilter,
 	memberofProperty,
-	usernameProperty,
-	uidProperty string,
+	usernameProperty string,
 	extraAttributes,
 	searchAttributes []string,
 ) *Ldap {
@@ -56,7 +54,6 @@ func NewInstance(
 		searchFilter:     searchFilter,
 		memberofProperty: memberofProperty,
 		usernameProperty: usernameProperty,
-		uidProperty:      uidProperty,
 		extraAttributes:  extraAttributes,
 		searchAttributes: searchAttributes,
 	}
@@ -124,7 +121,7 @@ func (s *Ldap) Search(username string) (*auth.UserInfo, error) {
 	}
 
 	user := &auth.UserInfo{
-		UID:      strings.ToLower(result.Entries[0].GetAttributeValue(s.uidProperty)),
+		UID:      strings.ToLower(result.Entries[0].DN),
 		Username: strings.ToLower(result.Entries[0].GetAttributeValue(s.usernameProperty)),
 		Groups:   sanitize(result.Entries[0].GetAttributeValues(s.memberofProperty)),
 		Extra:    extra,

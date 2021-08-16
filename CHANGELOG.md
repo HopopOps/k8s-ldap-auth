@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Server
 #### Added
-- User UID and username properties mapping with ldap can now be set with specific parameters or environment variable.
+- User username properties mapping with ldap can now be set with specific parameters or environment variable.
 
 #### Changed
 - Parameter `--member-of-property` is now `--memberof-property` (style consistency change)

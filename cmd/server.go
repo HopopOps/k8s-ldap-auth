@@ -75,12 +75,6 @@ func getServerCmd() *cli.Command {
 				EnvVars: []string{"LDAP_USER_USERNAMEPROPERTY"},
 				Usage:   "The `PROPERTY` that will be used as username in the TokenReview.",
 			},
-			&cli.StringFlag{
-				Name:    "uid-property",
-				Value:   "dn",
-				EnvVars: []string{"LDAP_USER_UIDPROPERTY"},
-				Usage:   "The `PROPERTY` that will be used as uid in the TokenReview.",
-			},
 			&cli.StringSliceFlag{
 				Name:    "extra-attributes",
 				EnvVars: []string{"LDAP_USER_EXTRAATTR"},
@@ -125,7 +119,6 @@ func getServerCmd() *cli.Command {
 				searchAttributes = c.StringSlice("search-attributes")
 				memberofProperty = c.String("memberof-property")
 				usernameProperty = c.String("username-property")
-				uidProperty      = c.String("uid-property")
 
 				privateKeyFile = c.String("private-key-file")
 				publicKeyFile  = c.String("public-key-file")
@@ -145,7 +138,6 @@ func getServerCmd() *cli.Command {
 					searchFilter,
 					memberofProperty,
 					usernameProperty,
-					uidProperty,
 					searchAttributes,
 				),
 				server.WithAccessLogs(),

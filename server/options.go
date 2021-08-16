@@ -23,8 +23,7 @@ func WithLdap(
 	searchScope,
 	searchFilter,
 	memberofProperty,
-	usernameProperty,
-	uidProperty string,
+	usernameProperty string,
 	extraAttributes []string) Option {
 	return func(i *Instance) error {
 		i.l = ldap.NewInstance(
@@ -36,9 +35,8 @@ func WithLdap(
 			searchFilter,
 			memberofProperty,
 			usernameProperty,
-			uidProperty,
 			extraAttributes,
-			append(extraAttributes, memberofProperty, usernameProperty, uidProperty),
+			append(extraAttributes, memberofProperty, usernameProperty),
 		)
 
 		return nil
