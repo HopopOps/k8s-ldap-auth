@@ -61,20 +61,7 @@ func NewInstance(
 	return s
 }
 
-func (s *Ldap) Authenticate(dn, password string) error {
-	l, err := ldap.DialURL(s.ldapURL)
-	if err != nil {
-		return err
-	}
-
-	defer l.Close()
-
-	// Bind as the user to verify their password
-	err = l.Bind(dn, password)
-	return err
-}
-
-func (s *Ldap) Search(username string) (*auth.UserInfo, error) {
+func (s *Ldap) Search(username, password string) (*auth.UserInfo, error) {
 	l, err := ldap.DialURL(s.ldapURL)
 	if err != nil {
 		return nil, err
@@ -112,6 +99,12 @@ func (s *Ldap) Search(username string) (*auth.UserInfo, error) {
 		return nil, fmt.Errorf("User not found")
 	} else if len(result.Entries) > 1 {
 		return nil, fmt.Errorf("Too many entries returned")
+	}
+
+	// Bind as the user to verify their password
+	err = l.Bind(result.Entries[0].DN, password)
+	if err != nil {
+		return nil, err
 	}
 
 	var extra map[string]auth.ExtraValue

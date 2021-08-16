@@ -3,31 +3,39 @@ package types
 import (
 	"crypto/rsa"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"time"
 
 	"github.com/lestrrat-go/jwx/jwa"
 	"github.com/lestrrat-go/jwx/jwt"
 	"github.com/rs/zerolog/log"
+
+	auth "k8s.io/api/authentication/v1"
 )
 
 type Token struct {
 	token jwt.Token
 }
 
-func NewToken(data []byte, ttl int64) *Token {
+func NewToken(user *auth.UserInfo, ttl int64) (*Token, error) {
 	now := time.Now()
+
+	data, err := json.Marshal(user)
+	if err != nil {
+		return nil, err
+	}
 
 	t := jwt.New()
 	t.Set(jwt.IssuedAtKey, now.Unix())
 	t.Set(jwt.ExpirationKey, now.Add(time.Duration(ttl)*time.Second).Unix())
-	t.Set("username", data)
+	t.Set("user", data)
 
 	token := &Token{
 		token: t,
 	}
 
-	return token
+	return token, nil
 }
 
 func Parse(payload []byte, key *rsa.PrivateKey) (*Token, error) {
@@ -48,19 +56,26 @@ func Parse(payload []byte, key *rsa.PrivateKey) (*Token, error) {
 	return token, nil
 }
 
-func (t *Token) GetUsername() (string, error) {
-	if v, ok := t.token.Get("username"); ok {
+func (t *Token) GetUser() (*auth.UserInfo, error) {
+	if v, ok := t.token.Get("user"); ok {
+		var user auth.UserInfo
+
 		log.Debug().Str("data", fmt.Sprintf("%v", v)).Msg("Got user data.")
 
 		data, err := base64.StdEncoding.WithPadding(base64.NoPadding).DecodeString(fmt.Sprintf("%v", v))
 		if err != nil {
-			return "", err
+			return nil, err
 		}
 
-		return string(data), nil
+		err = json.Unmarshal(data, &user)
+		if err != nil {
+			return nil, err
+		}
+
+		return &user, nil
 	}
 
-	return "", fmt.Errorf("Could not get username attribute of jwt token")
+	return nil, fmt.Errorf("Could not get user attribute of jwt token")
 }
 
 func (t *Token) IsValid() bool {

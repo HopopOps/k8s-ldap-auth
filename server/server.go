@@ -98,13 +98,7 @@ func (s *Instance) authenticate() http.HandlerFunc {
 		}
 
 		log.Debug().Str("username", credentials.Username).Msg("Received valid authentication request.")
-		user, err := s.l.Search(credentials.Username)
-		if err != nil {
-			writeExecCredentialError(res, ErrUnauthorized)
-			return
-		}
-
-		err = s.l.Authenticate(credentials.Username, credentials.Password)
+		user, err := s.l.Search(credentials.Username, credentials.Password)
 		if err != nil {
 			writeExecCredentialError(res, ErrUnauthorized)
 			return
@@ -112,7 +106,12 @@ func (s *Instance) authenticate() http.HandlerFunc {
 
 		log.Debug().Str("username", credentials.Username).Msg("Successfully authenticated.")
 
-		token := types.NewToken([]byte(user.UID), s.ttl)
+		token, err := types.NewToken(user, s.ttl)
+		if err != nil {
+			writeExecCredentialError(res, ErrServerError)
+			return
+		}
+
 		tokenData, err := token.Payload(s.k)
 		if err != nil {
 			writeExecCredentialError(res, ErrServerError)
@@ -189,17 +188,9 @@ func (s *Instance) validate() http.HandlerFunc {
 			log.Debug().Msg("TokenReview is not valid.")
 			tr.Status.Authenticated = false
 		} else {
-			username, err := token.GetUsername()
+			user, err := token.GetUser()
 			if err != nil {
-				log.Debug().Str("error", err.Error()).Msg("Could not extract username.")
-
-				writeTokenReviewError(res, ErrServerError, tr)
-				return
-			}
-
-			user, err := s.l.Search(username)
-			if err != nil {
-				log.Debug().Str("error", err.Error()).Msg("Could not get a user from username.")
+				log.Debug().Str("error", err.Error()).Msg("Could not extract user.")
 
 				writeTokenReviewError(res, ErrServerError, tr)
 				return
