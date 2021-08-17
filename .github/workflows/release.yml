@@ -24,7 +24,6 @@ jobs:
               PRE_RELEASE=true
             fi
           fi
-          echo ::set-output name=version::${VERSION}
           echo ::set-output name=pre::${PRE_RELEASE}
 
       - name: Extract release notes
@@ -115,6 +114,7 @@ jobs:
           file_glob: true
           tag: ${{ github.ref }}
           overwrite: true
+          release_name: ${{ steps.prep.outputs.version }}
 
   docker:
     name: Release Docker Images
