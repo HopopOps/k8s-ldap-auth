@@ -46,7 +46,7 @@ jobs:
       matrix:
         target:
           - "linux:arm64"
-          - "linux:arm"
+          # - "linux:arm"
           - "linux:amd64"
           - "darwin:arm64"
           - "darwin:amd64"
