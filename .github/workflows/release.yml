@@ -108,7 +108,7 @@ jobs:
             sha256sum ${{ secrets.APP_NAME }}.${GOOS}.${GOARCH} > ${{ secrets.APP_NAME }}.${GOOS}.${GOARCH}.sha256sum.txt
 
       - name: Upload binary and sum file
-        use: svenstaro/upload-release-action@v2
+        uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ${{ secrets.APP_NAME }}.*
