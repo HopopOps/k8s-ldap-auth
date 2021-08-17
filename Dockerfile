@@ -1,4 +1,4 @@
-FROM golang:1.16.7-alpine AS build
+FROM golang:1.17.0-alpine AS build
 ENV GOVERSION=1.16.6
 WORKDIR /usr/src
 RUN apk add --no-cache git=2.32.0-r0 gcc=10.3.1_git20210424-r2 build-base=0.5-r2
