@@ -25,15 +25,37 @@ jobs:
           - 1.14
           - 1.15
           - 1.16
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
       - name: Prepare
         id: prep
-        run: |
+        run: |-
           echo ::set-output name=buildtime::$(date -u +'%FT%TZ%:z')
+
       - name: Set up Go
         uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go }}
+
+      - name: Cache
+        id: cache
+        uses: actions/cache@v2
+        with:
+          path: |-
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |-
+            ${{ runner.os }}-go-
+
+      - name: Install Dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |-
+          go mod download
+
       - name: Build
         run: |-
           go build \
@@ -49,6 +71,7 @@ jobs:
               -X ${{ github.repository }}/version.BUILDTIME=${{ steps.prep.outputs.buildtime }} \
               -X ${{ github.repository }}/version.COMMITHASH=${{ github.sha }} \
               -s -w"
+
       - name: Verify
         run: |-
           ./${{ secrets.APP_NAME }} --version
