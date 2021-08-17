@@ -24,6 +24,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.16
+
       - name: Prepare
         id: prep
         run: |-
@@ -37,11 +42,7 @@ jobs:
           echo ::set-output name=version::${VERSION}
           echo ::set-output name=buildtime::$(date -u +'%FT%TZ%:z')
           echo ::set-output name=pre::${PRE_RELEASE}
-
-      - name: Set up Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: 1.16
+          echo ::set-output name=go-version::$(go version | sed -r 's/go version go(.+)\s.+/\1/')
 
       - name: Cache
         id: cache
@@ -73,7 +74,7 @@ jobs:
             -ldflags "\
               -X ${{ github.repository }}/version.APPNAME=${{ secrets.APP_NAME }} \
               -X ${{ github.repository }}/version.VERSION=${{ steps.prep.outputs.version }}
-              -X ${{ github.repository }}/version.GOVERSION=${{ matrix.go }} \
+              -X ${{ github.repository }}/version.GOVERSION=${{ steps.prep.outputs.go-version }} \
               -X ${{ github.repository }}/version.BUILDTIME=${{ steps.prep.outputs.buildtime }} \
               -X ${{ github.repository }}/version.COMMITHASH=${{ github.sha }} \
               -s -w"
