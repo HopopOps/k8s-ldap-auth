@@ -88,8 +88,8 @@ jobs:
 
       - name: Build
         run: |-
-          export GOOS="echo $(echo ${{ matrix.target }} | cut -d':' -f1)"
-          export GOARCH="echo $(echo ${{ matrix.target }} | cut -d':' -f2)"
+          export GOOS="$(echo ${{ matrix.target }} | cut -d':' -f1)"
+          export GOARCH="$(echo ${{ matrix.target }} | cut -d':' -f2)"
 
           go build \
             -trimpath \
