@@ -61,14 +61,12 @@ func NewInstance(
 	return s
 }
 
-func (s *Ldap) Search(username, password string) (*auth.UserInfo, error) {
+func (s *Ldap) Bind() (*ldap.Conn, error) {
 	l, err := ldap.DialURL(s.ldapURL)
 	if err != nil {
 		return nil, err
 	}
 	log.Debug().Msg("Successfully dialed ldap.")
-
-	defer l.Close()
 
 	err = l.Bind(s.bindDN, s.bindPassword)
 	if err != nil {
@@ -76,6 +74,17 @@ func (s *Ldap) Search(username, password string) (*auth.UserInfo, error) {
 	}
 
 	log.Debug().Msg("Successfully authenticated to ldap.")
+
+	return l, nil
+}
+
+func (s *Ldap) Search(username, password string) (*auth.UserInfo, error) {
+	l, err := s.Bind()
+	if err != nil {
+		return nil, err
+	}
+
+	defer l.Close()
 
 	// Execute LDAP Search request
 	searchRequest := ldap.NewSearchRequest(

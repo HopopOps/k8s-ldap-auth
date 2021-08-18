@@ -1,11 +1,14 @@
 package server
 
 import (
+	"context"
 	"crypto/rsa"
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
+	"github.com/etherlabsio/healthcheck/v2"
 	"github.com/gorilla/mux"
 	"github.com/rs/zerolog/log"
 
@@ -45,6 +48,24 @@ func NewInstance(opts ...Option) (*Instance, error) {
 	log.Info().Msg("Registering route handlers.")
 	r.HandleFunc("/auth", s.authenticate()).Methods("POST")
 	r.HandleFunc("/token", s.validate()).Methods("POST")
+	r.Handle("/health", healthcheck.Handler(
+		healthcheck.WithTimeout(5*time.Second),
+		healthcheck.WithChecker(
+			"ldap", healthcheck.CheckerFunc(
+				func(_ context.Context) error {
+					c, err := s.l.Bind()
+
+					if err != nil {
+						return err
+					}
+
+					defer c.Close()
+
+					return nil
+				},
+			),
+		),
+	))
 
 	log.Info().Msg("Applying middlewares.")
 	r.Use(s.m...)
