@@ -48,7 +48,7 @@ jobs:
           push: false
           tags: ${{ github.event.repository.name }}:latest
           build-args: |-
-            APP_NAME=${{ secrets.APP_NAME }}
+            APPNAME=${{ secrets.APP_NAME }}
             PKG=${{ github.repository }}
             VERSION=latest
             COMMITHASH=${{ github.sha }}

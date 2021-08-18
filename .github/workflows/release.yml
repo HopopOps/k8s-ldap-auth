@@ -172,7 +172,7 @@ jobs:
           push: true
           tags: ${{ steps.prep.outputs.tags }}
           build-args: |-
-            APP_NAME=${{ secrets.APP_NAME }}
+            APPNAME=${{ secrets.APP_NAME }}
             PKG=${{ github.repository }}
             VERSION=${{ steps.prep.outputs.version }}
             COMMITHASH=${{ github.sha }}
