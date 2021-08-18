@@ -3,6 +3,7 @@
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/vbouchaud/k8s-ldap-auth?style=for-the-badge)](https://github.com/vbouchaud/k8s-ldap-auth/releases/latest)
 [![License](https://img.shields.io/github/license/vbouchaud/k8s-ldap-auth?style=for-the-badge)](https://opensource.org/licenses/MPL-2.0)
 [![Go Report Card](https://goreportcard.com/badge/github.com/vbouchaud/k8s-ldap-auth?style=for-the-badge)](https://goreportcard.com/report/github.com/vbouchaud/k8s-ldap-auth)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fvbouchaud%2Fk8s-ldap-auth.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fvbouchaud%2Fk8s-ldap-auth?ref=badge_shield)
 [![Artifact Hub](https://img.shields.io/endpoint?style=for-the-badge&url=https://artifacthub.io/badge/repository/vbouchaud)](https://artifacthub.io/packages/search?repo=vbouchaud)
 
 A webhook token authentication plugin implementation backed by LDAP.
@@ -26,6 +27,7 @@ A webhook token authentication plugin implementation backed by LDAP.
   * [Kubernetes](#kubernetes)
     + [Helm Chart](#helm-chart)
 - [Inspiration](#inspiration)
+- [License](#license)
 
 ## What
 
@@ -364,6 +366,9 @@ A Chart is hosted at [vbouchaud/chartrepo](https://vbouchaud.github.io/chartrepo
 
 ## Inspiration
 I originally started this project after reading Daniel Weibel's article "Implementing LDAP authentication for Kubernetes" (https://learnk8s.io/kubernetes-custom-authentication or https://itnext.io/implementing-ldap-authentication-for-kubernetes-732178ec2155).
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fvbouchaud%2Fk8s-ldap-auth.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fvbouchaud%2Fk8s-ldap-auth?ref=badge_large)
 
 ## What's next
  - Group search for ldap not supporting `memberof` attribute ;
