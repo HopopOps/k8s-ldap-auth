@@ -3,6 +3,7 @@
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/vbouchaud/k8s-ldap-auth?style=for-the-badge)](https://github.com/vbouchaud/k8s-ldap-auth/releases/latest)
 [![License](https://img.shields.io/github/license/vbouchaud/k8s-ldap-auth?style=for-the-badge)](https://opensource.org/licenses/MPL-2.0)
 [![Go Report Card](https://goreportcard.com/badge/github.com/vbouchaud/k8s-ldap-auth?style=for-the-badge)](https://goreportcard.com/report/github.com/vbouchaud/k8s-ldap-auth)
+[![Artifact Hub](https://img.shields.io/endpoint?style=for-the-badge&url=https://artifacthub.io/badge/repository/k8s-ldap-auth)](https://artifacthub.io/packages/search?repo=k8s-ldap-auth)
 
 ## What
 
