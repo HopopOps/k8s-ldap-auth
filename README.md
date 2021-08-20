@@ -5,9 +5,29 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/vbouchaud/k8s-ldap-auth?style=for-the-badge)](https://goreportcard.com/report/github.com/vbouchaud/k8s-ldap-auth)
 [![Artifact Hub](https://img.shields.io/endpoint?style=for-the-badge&url=https://artifacthub.io/badge/repository/vbouchaud)](https://artifacthub.io/packages/search?repo=vbouchaud)
 
-## What
+A webhook token authentication plugin implementation backed by LDAP.
 
-This is a webhook token authentication plugin implementation backed by LDAP.
+- [What](#what)
+- [Usage](#usage)
+  * [Server](#server)
+    + [New cluster](#new-cluster)
+    + [Existing cluster](#existing-cluster)
+  * [Client](#client)
+  * [RBAC](#rbac)
+    + [Example](#example)
+- [Build](#build)
+- [Distribution](#distribution)
+  * [Docker](#docker)
+  * [Binary](#binary)
+  * [Linux](#linux)
+    + [Archlinux](#archlinux)
+  * [Darwin](#darwin)
+    + [With `brew`](#with--brew-)
+  * [Kubernetes](#kubernetes)
+    + [Helm Chart](#helm-chart)
+- [Inspiration](#inspiration)
+
+## What
 
 k8s-ldap-auth is released as a binary containing both client and server.
 
@@ -97,7 +117,7 @@ contexts:
 current-context: kube-apiserver@authentication-server
 ```
 
-##### New cluster
+#### New cluster
 
 If you're creating a new cluster with kubeadm, you can add the following to your init configuration file:
 ```yml
@@ -116,7 +136,7 @@ apiServer:
     pathType: File
 ```
 
-##### Existing cluster
+#### Existing cluster
 
 If the cluster was created with kubeadm, edit the kubeadm configuration stored in the namespace `kube-system` to add the configuration from above: `kubectl --namespace kube-system edit configmaps kubeadm-config`
 Editing this configuration does not actually update your api-server. It will however be used if you need to add a new control-plane with `kubeadm join`.
@@ -148,7 +168,7 @@ spec:
     name: webhook-config
 ```
 
-#### Client
+### Client
 
 Even though it's not specified anywhere, the `--password` option and the equivalent `$PASSWORD` environment variable as well as the configfile containing a password were added for convenience sake, e.g. when running in an automated fashion, etc. If not provided, it will be asked at runtime. The same can be said for the `--user` options and `$USER` environment variables.
 
