@@ -24,6 +24,7 @@ jobs:
         go:
           - 1.15
           - 1.16
+          - 1.17
 
     steps:
       - name: Checkout
