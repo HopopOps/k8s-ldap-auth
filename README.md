@@ -3,7 +3,7 @@
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/vbouchaud/k8s-ldap-auth?style=for-the-badge)](https://github.com/vbouchaud/k8s-ldap-auth/releases/latest)
 [![License](https://img.shields.io/github/license/vbouchaud/k8s-ldap-auth?style=for-the-badge)](https://opensource.org/licenses/MPL-2.0)
 [![Go Report Card](https://goreportcard.com/badge/github.com/vbouchaud/k8s-ldap-auth?style=for-the-badge)](https://goreportcard.com/report/github.com/vbouchaud/k8s-ldap-auth)
-[![Artifact Hub](https://img.shields.io/endpoint?style=for-the-badge&url=https://artifacthub.io/badge/repository/k8s-ldap-auth)](https://artifacthub.io/packages/search?repo=k8s-ldap-auth)
+[![Artifact Hub](https://img.shields.io/endpoint?style=for-the-badge&url=https://artifacthub.io/badge/repository/vbouchaud)](https://artifacthub.io/packages/search?repo=vbouchaud)
 
 ## What
 
@@ -340,7 +340,7 @@ brew install --formula ./k8s-ldap-auth.rb
 
 ### Kubernetes
 #### Helm Chart
-A [chart](https://github.com/vbouchaud/k8s-ldap-auth/tree/master/distribution/kubernetes/charts/k8s-ldap-auth/) is located in this repository. Please follow its `README.md` for further information.
+A Chart is hosted at [vbouchaud/chartrepo](https://vbouchaud.github.io/chartrepo/). Please see [its readme](https://github.com/vbouchaud/chartrepo/blob/main/charts/k8s-ldap-auth/README.md) for more information on how to install it.
 
 ## Inspiration
 I originaly started this project after reading Daniel Weibel's article "Implementing LDAP authentication for Kubernetes" (https://learnk8s.io/kubernetes-custom-authentication or https://itnext.io/implementing-ldap-authentication-for-kubernetes-732178ec2155).
