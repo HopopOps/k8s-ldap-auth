@@ -73,7 +73,7 @@ jobs:
             -o ${{ secrets.APP_NAME }}.${GOOS}.${GOARCH} \
             -ldflags "\
               -X ${{ github.repository }}/version.APPNAME=${{ secrets.APP_NAME }} \
-              -X ${{ github.repository }}/version.VERSION=${{ steps.prep.outputs.version }}
+              -X ${{ github.repository }}/version.VERSION=${{ steps.prep.outputs.version }} \
               -X ${{ github.repository }}/version.GOVERSION=${{ steps.prep.outputs.go-version }} \
               -X ${{ github.repository }}/version.BUILDTIME=${{ steps.prep.outputs.buildtime }} \
               -X ${{ github.repository }}/version.COMMITHASH=${{ github.sha }} \

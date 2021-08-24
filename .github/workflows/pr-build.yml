@@ -67,7 +67,7 @@ jobs:
             -o ${{ secrets.APP_NAME }} \
             -ldflags "\
               -X ${{ github.repository }}/version.APPNAME=${{ secrets.APP_NAME }} \
-              -X ${{ github.repository }}/version.VERSION=latest
+              -X ${{ github.repository }}/version.VERSION=latest \
               -X ${{ github.repository }}/version.GOVERSION=${{ steps.prep.outputs.go-version }} \
               -X ${{ github.repository }}/version.BUILDTIME=${{ steps.prep.outputs.buildtime }} \
               -X ${{ github.repository }}/version.COMMITHASH=${{ github.sha }} \
