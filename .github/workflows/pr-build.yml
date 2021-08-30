@@ -26,6 +26,8 @@ jobs:
           - 1.16
           - 1.17
 
+    if: ${{ github.actor != 'dependabot[bot]' }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2

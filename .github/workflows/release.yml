@@ -10,6 +10,9 @@ jobs:
   release:
     name: Create release and upload binaries
     runs-on: ubuntu-latest
+
+    if: ${{ github.actor != 'dependabot[bot]' }}
+
     strategy:
       matrix:
         target:
