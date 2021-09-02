@@ -72,7 +72,7 @@ k8s-ldap-auth serve \
 ```
 
 Note that if the server do not know of any key pair it will create one at launch but will not persist it.
-If you want your jwt tokens to be valid accross server instances: after restarts or behind a load-balancer, you should provide a key pair.
+If you want your jwt tokens to be valid accross server instances, after restarts or behind a load-balancer, you should provide a key pair.
 
 Key pair can be created with openssl:
 ```
