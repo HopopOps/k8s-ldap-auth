@@ -3,7 +3,7 @@ module vbouchaud/k8s-ldap-auth
 go 1.15
 
 require (
-	github.com/adrg/xdg v0.3.3
+	github.com/adrg/xdg v0.3.4
 	github.com/etherlabsio/healthcheck/v2 v2.0.0
 	github.com/go-ldap/ldap v3.0.3+incompatible
 	github.com/gorilla/mux v1.8.0
