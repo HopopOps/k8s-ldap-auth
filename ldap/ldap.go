@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/go-ldap/ldap"
+	ldap "github.com/go-ldap/ldap/v3"
 	"github.com/rs/zerolog/log"
 
 	auth "k8s.io/api/authentication/v1"
