@@ -53,3 +53,6 @@ coverage.out
 /tr.json
 /deploy
 dist/
+
+# idea
+/.idea
