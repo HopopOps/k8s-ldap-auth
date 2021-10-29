@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/zalando/go-keyring"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -15,6 +16,8 @@ import (
 
 	"vbouchaud/k8s-ldap-auth/types"
 )
+
+const credentialIdentifier = "k8s-ldap-auth"
 
 func readData(readLine func(screen io.ReadWriter) (string, error)) (string, error) {
 	if !isatty.IsTerminal(os.Stdin.Fd()) && !isatty.IsCygwinTerminal(os.Stdin.Fd()) {
@@ -74,6 +77,8 @@ func performAuth(addr, user, pass string) ([]byte, error) {
 		res *http.Response
 	)
 
+	interactiveMode := false
+
 	if user == "" {
 		log.Info().Msg("Username was not provided, asking for input")
 		user, err = readData(username)
@@ -85,6 +90,14 @@ func performAuth(addr, user, pass string) ([]byte, error) {
 	log.Info().Str("username", user).Msg("Username exists.")
 
 	if pass == "" {
+		pass, err = keyring.Get(credentialIdentifier, user)
+		if err != nil {
+			log.Error().Err(err).Msg("Error while fetching credentials from store.")
+		}
+	}
+
+	if pass == "" {
+		interactiveMode = true
 		log.Info().Msg("Password was not provided, asking for input")
 		pass, err = readData(password)
 		print("\n")
@@ -110,6 +123,9 @@ func performAuth(addr, user, pass string) ([]byte, error) {
 	defer res.Body.Close()
 
 	if res.StatusCode != http.StatusOK {
+		if err := keyring.Delete(credentialIdentifier, user); err != nil {
+			log.Error().Err(err).Msg("Error while removing credentials from store.")
+		}
 		return nil, fmt.Errorf(http.StatusText(res.StatusCode))
 	}
 
@@ -117,6 +133,12 @@ func performAuth(addr, user, pass string) ([]byte, error) {
 	body, err = ioutil.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
+	}
+
+	if interactiveMode {
+		if err = keyring.Set(credentialIdentifier, user, pass); err != nil {
+			log.Error().Err(err).Msg("Error while registering credentials into store.")
+		}
 	}
 
 	return body, nil
