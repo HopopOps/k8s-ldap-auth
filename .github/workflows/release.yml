@@ -83,7 +83,7 @@ jobs:
               -X ${{ github.repository }}/version.COMMITHASH=${{ github.sha }} \
               -s -w"
 
-          if [ ! -z "${EXT}"]; then
+          if [ ! -z "${EXT}" ]; then
               mv ${{ secrets.APP_NAME }}.${GOOS}.${GOARCH} ${{ secrets.APP_NAME }}${EXT}
               sha256sum ${{ secrets.APP_NAME }}${EXT} > ${{ secrets.APP_NAME }}${EXT}.sha256sum.txt
           else
