@@ -170,7 +170,7 @@ spec:
 
 ### Client
 
-Even though it's not specified anywhere, the `--password` option and the equivalent `$PASSWORD` environment variable as well as the configfile containing a password were added for convenience sake, e.g. when running in an automated fashion, etc. If not provided, it will be asked at runtime. The same can be said for the `--user` options and `$USER` environment variables.
+Even though it's not specified anywhere, the `--password` option and the equivalent `$PASSWORD` environment variable as well as the configfile containing a password were added for convenience sake, e.g. when running in an automated fashion, etc. If not provided, it will be asked at runtime and, if available, saved into the client OS credential manager. The same can be said for the `--user` options and `$USER` environment variables.
 
 Authentication can be achieved with the following command you can execute to test your installation:
 ```

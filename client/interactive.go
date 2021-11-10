@@ -17,8 +17,6 @@ import (
 	"vbouchaud/k8s-ldap-auth/types"
 )
 
-const credentialIdentifier = "k8s-ldap-auth"
-
 func readData(readLine func(screen io.ReadWriter) (string, error)) (string, error) {
 	if !isatty.IsTerminal(os.Stdin.Fd()) && !isatty.IsCygwinTerminal(os.Stdin.Fd()) {
 		return "", fmt.Errorf("stdin should be terminal")
@@ -41,7 +39,6 @@ func readData(readLine func(screen io.ReadWriter) (string, error)) (string, erro
 	}
 
 	return line, nil
-
 }
 
 func username(screen io.ReadWriter) (string, error) {
@@ -90,7 +87,7 @@ func performAuth(addr, user, pass string) ([]byte, error) {
 	log.Info().Str("username", user).Msg("Username exists.")
 
 	if pass == "" {
-		pass, err = keyring.Get(credentialIdentifier, user)
+		pass, err = keyring.Get(addr, user)
 		if err != nil {
 			log.Error().Err(err).Msg("Error while fetching credentials from store.")
 		}
@@ -123,7 +120,7 @@ func performAuth(addr, user, pass string) ([]byte, error) {
 	defer res.Body.Close()
 
 	if res.StatusCode != http.StatusOK {
-		if err := keyring.Delete(credentialIdentifier, user); err != nil {
+		if err := keyring.Delete(addr, user); err != nil {
 			log.Error().Err(err).Msg("Error while removing credentials from store.")
 		}
 		return nil, fmt.Errorf(http.StatusText(res.StatusCode))
@@ -136,7 +133,7 @@ func performAuth(addr, user, pass string) ([]byte, error) {
 	}
 
 	if interactiveMode {
-		if err = keyring.Set(credentialIdentifier, user, pass); err != nil {
+		if err = keyring.Set(addr, user, pass); err != nil {
 			log.Error().Err(err).Msg("Error while registering credentials into store.")
 		}
 	}

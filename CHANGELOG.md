@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.2.1] - 2021-11-10
+### Client
+#### Modified
+- The entry in the credential manager is now specific to the k8s-ldap-auth server address, allowing for different k8s-ldap-auth to be used against different ldap servers.
+
 ## [3.2.0] - 2021-10-29
 ### Client
 #### Added
