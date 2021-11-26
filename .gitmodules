@@ -1,9 +1,0 @@
-[submodule "distribution/linux/aur/k8s-ldap-auth-bin"]
-	path = distribution/linux/aur/k8s-ldap-auth-bin
-	url = ssh://aur@aur.archlinux.org/k8s-ldap-auth-bin.git
-[submodule "distribution/linux/aur/k8s-ldap-auth"]
-	path = distribution/linux/aur/k8s-ldap-auth
-	url = ssh://aur@aur.archlinux.org/k8s-ldap-auth.git
-[submodule "distribution/linux/aur/k8s-ldap-auth-git"]
-	path = distribution/linux/aur/k8s-ldap-auth-git
-	url = ssh://aur@aur.archlinux.org/k8s-ldap-auth-git.git
