@@ -12,8 +12,8 @@ require (
 	github.com/rs/zerolog v1.26.0
 	github.com/urfave/cli/v2 v2.3.0
 	github.com/zalando/go-keyring v0.1.1
-	golang.org/x/term v0.0.0-20210406210042-72f3dc4e9b72
-	k8s.io/api v0.22.4
-	k8s.io/apimachinery v0.22.4
-	k8s.io/client-go v0.22.4
+	golang.org/x/term v0.0.0-20210615171337-6886f2dfbf5b
+	k8s.io/api v0.23.0
+	k8s.io/apimachinery v0.23.0
+	k8s.io/client-go v0.23.0
 )
