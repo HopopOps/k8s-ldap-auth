@@ -72,7 +72,7 @@ k8s-ldap-auth serve \
 ```
 
 Note that if the server do not know of any key pair it will create one at launch but will not persist it.
-If you want your jwt tokens to be valid accross server instances, after restarts or behind a load-balancer, you should provide a key pair.
+If you want your jwt tokens to be valid across server instances, after restarts or behind a load-balancer, you should provide a key pair.
 
 Key pair can be created with openssl:
 ```
@@ -170,7 +170,7 @@ spec:
 
 ### Client
 
-Even though it's not specified anywhere, the `--password` option and the equivalent `$PASSWORD` environment variable as well as the configfile containing a password were added for convenience sake, e.g. when running in an automated fashion, etc. If not provided, it will be asked at runtime and, if available, saved into the client OS credential manager. The same can be said for the `--user` options and `$USER` environment variables.
+Even though it's not specified anywhere, the `--password` option and the equivalent `$PASSWORD` environment variable as well as the configfile containing a password were added for convenience’s sake, e.g. when running in an automated fashion, etc. If not provided, it will be asked at runtime and, if available, saved into the client OS credential manager. The same can be said for the `--user` options and `$USER` environment variables.
 
 Authentication can be achieved with the following command you can execute to test your installation:
 ```
@@ -190,7 +190,7 @@ users:
         command: k8s-ldap-auth
 
         # This field is used by kubectl to fill a template TokenReview in
-        # `$KUBERNETES_EXEC_INFO` environment variable. Not currently used, it's
+        # `$KUBERNETES_EXEC_INFO` environment variable. Not currently used, it
         # might be in the future.
         apiVersion: client.authentication.k8s.io/v1beta1
 
@@ -202,7 +202,7 @@ users:
             value: client.authentication.k8s.io/v1beta1
 
           # You can fill a USER environment variable to your username if you
-          # want to overwrite the USER from you system or to an empty one if you
+          # want to overwrite the USER from your system or to an empty one if you
           # want the authenticator to ask for one at runtime.
           - name: USER
             value: ""
@@ -322,7 +322,7 @@ A stripped and compressed binary can be build with:
 make release
 ```
 
-Docker release multiarch image can be built and pushed with:
+Docker release multi-arch image can be built and pushed with:
 ```
 PLATFORM="linux/arm/v7,linux/amd64" make docker
 ```
@@ -331,7 +331,7 @@ PLATFORM="linux/arm/v7,linux/amd64" make docker
 
 ## Distribution
 ### Docker
-Docker images of this projet are available for arm/v7, arm64/v8 and amd64 at [vbouchaud/k8s-ldap-auth](https://hub.docker.com/r/vbouchaud/k8s-ldap-auth) on docker hub and on quay.io at [vbouchaud/k8s-ldap-auth](https://quay.io/vbouchaud/k8s-ldap-auth).
+Docker images of this project are available for arm/v7, arm64/v8 and amd64 at [vbouchaud/k8s-ldap-auth](https://hub.docker.com/r/vbouchaud/k8s-ldap-auth) on docker hub and on quay.io at [vbouchaud/k8s-ldap-auth](https://quay.io/vbouchaud/k8s-ldap-auth).
 
 ### Binary
 Binaries for the following OS and architectures are available on the release page:
@@ -363,7 +363,7 @@ brew install --formula ./k8s-ldap-auth.rb
 A Chart is hosted at [vbouchaud/chartrepo](https://vbouchaud.github.io/chartrepo/). Please see [its readme](https://github.com/vbouchaud/chartrepo/blob/main/charts/k8s-ldap-auth/README.md) for more information on how to install it.
 
 ## Inspiration
-I originaly started this project after reading Daniel Weibel's article "Implementing LDAP authentication for Kubernetes" (https://learnk8s.io/kubernetes-custom-authentication or https://itnext.io/implementing-ldap-authentication-for-kubernetes-732178ec2155).
+I originally started this project after reading Daniel Weibel's article "Implementing LDAP authentication for Kubernetes" (https://learnk8s.io/kubernetes-custom-authentication or https://itnext.io/implementing-ldap-authentication-for-kubernetes-732178ec2155).
 
 ## What's next
  - Group search for ldap not supporting `memberof` attribute ;

@@ -51,7 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Client
 #### Added
-- There is now a reset command to ease the removal of cached token and force reauthentication on next invocation.
+- There is now a reset command to ease the removal of cached token and force re-authentication on next invocation.
 
 ## [1.0.0] - 2021-07-22
 ### Server
