@@ -17,7 +17,7 @@ jobs:
       matrix:
         target:
           - "linux:arm64:"
-          # - "linux:arm:"
+          - "linux:arm:"
           - "linux:amd64:"
           - "darwin:arm64:"
           - "darwin:amd64:"
@@ -69,19 +69,34 @@ jobs:
           export GOARCH="$(echo ${{ matrix.target }} | cut -d':' -f2)"
           export EXT="$(echo ${{ matrix.target }} | cut -d':' -f3)"
 
-          go build \
-            -trimpath \
-            -buildmode=pie \
-            -mod=readonly \
-            -modcacherw \
-            -o ${{ secrets.APP_NAME }}.${GOOS}.${GOARCH} \
-            -ldflags "\
-              -X ${{ github.repository }}/version.APPNAME=${{ secrets.APP_NAME }} \
-              -X ${{ github.repository }}/version.VERSION=${{ steps.prep.outputs.version }} \
-              -X ${{ github.repository }}/version.GOVERSION=${{ steps.prep.outputs.go-version }} \
-              -X ${{ github.repository }}/version.BUILDTIME=${{ steps.prep.outputs.buildtime }} \
-              -X ${{ github.repository }}/version.COMMITHASH=${{ github.sha }} \
-              -s -w"
+          if [ $GOARCH = arm ]; then
+            go build \
+              -trimpath \
+              -mod=readonly \
+              -modcacherw \
+              -o ${{ secrets.APP_NAME }}.${GOOS}.${GOARCH} \
+              -ldflags "\
+                -X ${{ github.repository }}/version.APPNAME=${{ secrets.APP_NAME }} \
+                -X ${{ github.repository }}/version.VERSION=${{ steps.prep.outputs.version }} \
+                -X ${{ github.repository }}/version.GOVERSION=${{ steps.prep.outputs.go-version }} \
+                -X ${{ github.repository }}/version.BUILDTIME=${{ steps.prep.outputs.buildtime }} \
+                -X ${{ github.repository }}/version.COMMITHASH=${{ github.sha }} \
+                -s -w"
+          else
+            go build \
+              -trimpath \
+              -buildmode=pie \
+              -mod=readonly \
+              -modcacherw \
+              -o ${{ secrets.APP_NAME }}.${GOOS}.${GOARCH} \
+              -ldflags "\
+                -X ${{ github.repository }}/version.APPNAME=${{ secrets.APP_NAME }} \
+                -X ${{ github.repository }}/version.VERSION=${{ steps.prep.outputs.version }} \
+                -X ${{ github.repository }}/version.GOVERSION=${{ steps.prep.outputs.go-version }} \
+                -X ${{ github.repository }}/version.BUILDTIME=${{ steps.prep.outputs.buildtime }} \
+                -X ${{ github.repository }}/version.COMMITHASH=${{ github.sha }} \
+                -s -w"
+          fi
 
           if [ ! -z "${EXT}" ]; then
               mv ${{ secrets.APP_NAME }}.${GOOS}.${GOARCH} ${{ secrets.APP_NAME }}${EXT}
