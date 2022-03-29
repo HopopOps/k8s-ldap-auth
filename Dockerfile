@@ -1,6 +1,6 @@
 FROM golang:1.18.0-alpine AS build
 # TODO: dynamically get this value
-ENV GOVERSION=1.17.8
+ENV GOVERSION=1.18.0
 
 WORKDIR /usr/src
 RUN apk add --no-cache git=2.34.1-r0 gcc=10.3.1_git20211027-r0 build-base=0.5-r2

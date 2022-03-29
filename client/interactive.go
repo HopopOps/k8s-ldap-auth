@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/zalando/go-keyring"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -12,6 +11,7 @@ import (
 
 	"github.com/mattn/go-isatty"
 	"github.com/rs/zerolog/log"
+	"github.com/zalando/go-keyring"
 	"golang.org/x/term"
 
 	"vbouchaud/k8s-ldap-auth/types"

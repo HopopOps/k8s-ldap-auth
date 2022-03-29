@@ -1,6 +1,6 @@
 module vbouchaud/k8s-ldap-auth
 
-go 1.15
+go 1.16
 
 require (
 	github.com/adrg/xdg v0.4.0
