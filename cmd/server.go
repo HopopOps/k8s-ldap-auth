@@ -116,7 +116,7 @@ func getServerCmd() *cli.Command {
 				searchBase       = c.String("search-base")
 				searchScope      = c.String("search-scope")
 				searchFilter     = c.String("search-filter")
-				searchAttributes = c.StringSlice("search-attributes")
+				extraAttributes  = c.StringSlice("extra-attributes")
 				memberofProperty = c.String("memberof-property")
 				usernameProperty = c.String("username-property")
 
@@ -138,7 +138,7 @@ func getServerCmd() *cli.Command {
 					searchFilter,
 					memberofProperty,
 					usernameProperty,
-					searchAttributes,
+					extraAttributes,
 				),
 				server.WithAccessLogs(),
 				server.WithKey(
