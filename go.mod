@@ -13,7 +13,7 @@ require (
 	github.com/urfave/cli/v2 v2.4.0
 	github.com/zalando/go-keyring v0.2.1
 	golang.org/x/term v0.0.0-20210615171337-6886f2dfbf5b
-	k8s.io/api v0.23.5
-	k8s.io/apimachinery v0.23.5
+	k8s.io/api v0.23.6
+	k8s.io/apimachinery v0.23.6
 	k8s.io/client-go v0.23.5
 )
