@@ -7,7 +7,7 @@ require (
 	github.com/etherlabsio/healthcheck/v2 v2.0.0
 	github.com/go-ldap/ldap/v3 v3.4.3
 	github.com/gorilla/mux v1.8.0
-	github.com/lestrrat-go/jwx v1.2.23
+	github.com/lestrrat-go/jwx v1.2.24
 	github.com/mattn/go-isatty v0.0.14
 	github.com/rs/zerolog v1.26.1
 	github.com/urfave/cli/v2 v2.4.0
