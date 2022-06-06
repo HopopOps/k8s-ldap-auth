@@ -1,12 +1,12 @@
-FROM golang:1.18.2-alpine AS build
+FROM golang:1.18.3-alpine AS build
 # TODO: dynamically get this value
-ENV GOVERSION=1.18.2
+ENV GOVERSION=1.18.3
 
 WORKDIR /usr/src
 RUN apk add --no-cache \
-    git=2.34.2-r0 \
-    gcc=10.3.1_git20211027-r0 \
-    build-base=0.5-r2
+    git=2.36.1-r0 \
+    gcc=11.2.1_git20220219-r2 \
+    build-base=0.5-r3
 
 ARG PKG
 ARG APPNAME
