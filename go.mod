@@ -8,7 +8,7 @@ require (
 	github.com/go-ldap/ldap/v3 v3.4.3
 	github.com/gorilla/mux v1.8.0
 	github.com/lestrrat-go/jwx v1.2.25
-	github.com/mattn/go-isatty v0.0.14
+	github.com/mattn/go-isatty v0.0.16
 	github.com/rs/zerolog v1.27.0
 	github.com/urfave/cli/v2 v2.11.2
 	github.com/zalando/go-keyring v0.2.1
