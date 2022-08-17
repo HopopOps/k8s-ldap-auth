@@ -5,7 +5,7 @@ go 1.16
 require (
 	github.com/adrg/xdg v0.4.0
 	github.com/etherlabsio/healthcheck/v2 v2.0.0
-	github.com/go-ldap/ldap/v3 v3.4.3
+	github.com/go-ldap/ldap/v3 v3.4.4
 	github.com/gorilla/mux v1.8.0
 	github.com/lestrrat-go/jwx v1.2.25
 	github.com/mattn/go-isatty v0.0.16
