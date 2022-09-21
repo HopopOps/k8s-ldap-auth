@@ -10,7 +10,7 @@ require (
 	github.com/lestrrat-go/jwx v1.2.25
 	github.com/mattn/go-isatty v0.0.16
 	github.com/rs/zerolog v1.28.0
-	github.com/urfave/cli/v2 v2.14.1
+	github.com/urfave/cli/v2 v2.16.3
 	github.com/zalando/go-keyring v0.2.1
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211
 	k8s.io/api v0.25.1
