@@ -11,7 +11,7 @@ require (
 	github.com/mattn/go-isatty v0.0.17
 	github.com/rs/zerolog v1.28.0
 	github.com/urfave/cli/v2 v2.25.1
-	github.com/zalando/go-keyring v0.2.1
+	github.com/zalando/go-keyring v0.2.2
 	golang.org/x/term v0.6.0
 	k8s.io/api v0.26.0
 	k8s.io/apimachinery v0.26.0
