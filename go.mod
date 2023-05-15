@@ -12,7 +12,7 @@ require (
 	github.com/rs/zerolog v1.29.1
 	github.com/urfave/cli/v2 v2.25.1
 	github.com/zalando/go-keyring v0.2.2
-	golang.org/x/term v0.6.0
+	golang.org/x/term v0.8.0
 	k8s.io/api v0.27.1
 	k8s.io/apimachinery v0.27.1
 	k8s.io/client-go v0.27.1
