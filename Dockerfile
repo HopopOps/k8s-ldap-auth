@@ -1,6 +1,6 @@
 FROM golang:1.21.4-alpine AS build
 # TODO: dynamically get this value
-ENV GOVERSION=1.20.4
+ENV GOVERSION=1.21.4
 
 WORKDIR /usr/src
 RUN apk add --no-cache \
