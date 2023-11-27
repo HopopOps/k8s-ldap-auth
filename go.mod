@@ -6,7 +6,7 @@ require (
 	github.com/adrg/xdg v0.4.0
 	github.com/etherlabsio/healthcheck/v2 v2.0.0
 	github.com/go-ldap/ldap/v3 v3.4.6
-	github.com/gorilla/mux v1.8.0
+	github.com/gorilla/mux v1.8.1
 	github.com/lestrrat-go/jwx v1.2.26
 	github.com/mattn/go-isatty v0.0.19
 	github.com/rs/zerolog v1.31.0
