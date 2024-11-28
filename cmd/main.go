@@ -8,7 +8,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
 
-	"vbouchaud/k8s-ldap-auth/version"
+	"k8s-ldap-auth/version"
 )
 
 type action func(*cli.Context) error
@@ -27,7 +27,7 @@ func Start() error {
 	app.Authors = []*cli.Author{
 		{
 			Name:  "Vianney Bouchaud",
-			Email: "vianney@bouchaud.org",
+			Email: "vianney@hopopops.org",
 		},
 	}
 

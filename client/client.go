@@ -8,7 +8,7 @@ import (
 
 	"github.com/rs/zerolog/log"
 
-	"vbouchaud/k8s-ldap-auth/types"
+	"k8s-ldap-auth/types"
 )
 
 func Auth(addr, user, pass string) error {

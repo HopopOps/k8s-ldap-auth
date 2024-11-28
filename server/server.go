@@ -16,8 +16,8 @@ import (
 	machinery "k8s.io/apimachinery/pkg/apis/meta/v1"
 	client "k8s.io/client-go/pkg/apis/clientauthentication/v1beta1"
 
-	"vbouchaud/k8s-ldap-auth/ldap"
-	"vbouchaud/k8s-ldap-auth/types"
+	"k8s-ldap-auth/ldap"
+	"k8s-ldap-auth/types"
 )
 
 const ContentTypeHeader = "Content-Type"

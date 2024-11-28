@@ -6,9 +6,9 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/rs/zerolog/log"
 
-	"vbouchaud/k8s-ldap-auth/ldap"
-	"vbouchaud/k8s-ldap-auth/server/middlewares"
-	"vbouchaud/k8s-ldap-auth/types"
+	"k8s-ldap-auth/ldap"
+	"k8s-ldap-auth/server/middlewares"
+	"k8s-ldap-auth/types"
 )
 
 // Option function for configuring a server instance
