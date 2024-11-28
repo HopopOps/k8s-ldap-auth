@@ -27,7 +27,7 @@ func Start() error {
 	app.Authors = []*cli.Author{
 		{
 			Name:  "Vianney Bouchaud",
-			Email: "vianney@bouchaud.org",
+			Email: "vianney@hopopops.org",
 		},
 	}
 
