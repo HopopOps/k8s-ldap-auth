@@ -14,7 +14,7 @@ import (
 	"github.com/zalando/go-keyring"
 	"golang.org/x/term"
 
-	"vbouchaud/k8s-ldap-auth/types"
+	"k8s-ldap-auth/types"
 )
 
 func readData(readLine func(screen io.ReadWriter) (string, error)) (string, error) {

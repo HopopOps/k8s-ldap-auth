@@ -5,7 +5,7 @@ import (
 
 	"github.com/urfave/cli/v2"
 
-	"vbouchaud/k8s-ldap-auth/server"
+	"k8s-ldap-auth/server"
 )
 
 func getServerCmd() *cli.Command {

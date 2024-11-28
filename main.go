@@ -1,7 +1,7 @@
 package main
 
 import (
-	"vbouchaud/k8s-ldap-auth/cmd"
+	"k8s-ldap-auth/cmd"
 )
 
 func main() {

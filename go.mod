@@ -1,4 +1,4 @@
-module vbouchaud/k8s-ldap-auth
+module k8s-ldap-auth
 
 go 1.22.0
 

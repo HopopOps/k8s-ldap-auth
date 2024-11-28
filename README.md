@@ -1,9 +1,9 @@
 # k8s-ldap-auth
 
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/vbouchaud/k8s-ldap-auth?style=for-the-badge)](https://github.com/vbouchaud/k8s-ldap-auth/releases/latest)
-[![License](https://img.shields.io/github/license/vbouchaud/k8s-ldap-auth?style=for-the-badge)](https://opensource.org/licenses/MPL-2.0)
-[![Go Report Card](https://goreportcard.com/badge/github.com/vbouchaud/k8s-ldap-auth?style=for-the-badge)](https://goreportcard.com/report/github.com/vbouchaud/k8s-ldap-auth)
-[![Artifact Hub](https://img.shields.io/endpoint?style=for-the-badge&url=https://artifacthub.io/badge/repository/vbouchaud)](https://artifacthub.io/packages/search?repo=vbouchaud)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/hopopops/k8s-ldap-auth?style=for-the-badge)](https://github.com/hopopops/k8s-ldap-auth/releases/latest)
+[![License](https://img.shields.io/github/license/hopopops/k8s-ldap-auth?style=for-the-badge)](https://opensource.org/licenses/MPL-2.0)
+[![Go Report Card](https://goreportcard.com/badge/github.com/hopopops/k8s-ldap-auth?style=for-the-badge)](https://goreportcard.com/report/github.com/hopopops/k8s-ldap-auth)
+[![Artifact Hub](https://img.shields.io/endpoint?style=for-the-badge&url=https://artifacthub.io/badge/repository/hopopops)](https://artifacthub.io/packages/search?repo=hopopops)
 
 A webhook token authentication plugin implementation backed by LDAP.
 
@@ -217,7 +217,7 @@ users:
 
         installHint: |
           k8s-ldap-auth is required to authenticate to the current context.
-          It can be installed from https://github.com/vbouchaud/k8s-ldap-auth.
+          It can be installed from https://github.com/hopopops/k8s-ldap-auth.
 
         # This parameter, when true, tells `kubectl` to fill the TokenReview in
         # the `$KUBERNETES_EXEC_INFO` environment variable with extra config
@@ -331,7 +331,7 @@ PLATFORM="linux/arm/v7,linux/amd64" make docker
 
 ## Distribution
 ### Docker
-Docker images of this project are available for arm/v7, arm64/v8 and amd64 at [vbouchaud/k8s-ldap-auth](https://hub.docker.com/r/vbouchaud/k8s-ldap-auth) on docker hub and on quay.io at [vbouchaud/k8s-ldap-auth](https://quay.io/vbouchaud/k8s-ldap-auth).
+Docker images of this project are available for arm/v7, arm64/v8 and amd64 at [hopopops/k8s-ldap-auth](https://hub.docker.com/r/hopopops/k8s-ldap-auth) on docker hub and on quay.io at [hopopops/k8s-ldap-auth](https://quay.io/hopopops/k8s-ldap-auth).
 
 ### Binary
 Binaries for the following OS and architectures are available on the release page:
@@ -352,15 +352,15 @@ Binaries for the following OS and architectures are available on the release pag
 
 ### Darwin
 #### With `brew`
-`k8s-ldap-auth.rb` is not in the official repository, you can install it from [my repository](https://github.com/vbouchaud/homebrew-tap) with the following commands:
+`k8s-ldap-auth.rb` is not in the official repository, you can install it from [my repository](https://github.com/hopopops/homebrew-tap) with the following commands:
 
-`brew install vbouchaud/tap/k8s-ldap-auth`
+`brew install hopopops/tap/k8s-ldap-auth`
 
-Or `brew tap vbouchaud/tap` and then `brew install k8s-ldap-auth`.
+Or `brew tap hopopops/tap` and then `brew install k8s-ldap-auth`.
 
 ### Kubernetes
 #### Helm Chart
-A Chart is hosted at [vbouchaud/chartrepo](https://vbouchaud.github.io/chartrepo/). Please see [its readme](https://github.com/vbouchaud/chartrepo/blob/main/charts/k8s-ldap-auth/README.md) for more information on how to install it.
+A Chart is hosted at [hopopops/chartrepo](https://hopopops.github.io/chartrepo/). Please see [its readme](https://github.com/hopopops/chartrepo/blob/main/charts/k8s-ldap-auth/README.md) for more information on how to install it.
 
 ## Inspiration
 I originally started this project after reading Daniel Weibel's article "Implementing LDAP authentication for Kubernetes" (https://learnk8s.io/kubernetes-custom-authentication or https://itnext.io/implementing-ldap-authentication-for-kubernetes-732178ec2155).

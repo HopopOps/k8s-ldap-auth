@@ -12,7 +12,7 @@ APPNAME := k8s-ldap-auth
 BIN ?= $(APPNAME)
 
 ORG ?= registry.aegir.bouchaud.org
-PKG := vbouchaud/$(APPNAME)
+PKG := hopopops/$(APPNAME)
 PLATFORM ?= "linux/arm/v7,linux/arm64/v8,linux/amd64"
 GO ?= go
 SED ?= sed
