@@ -4,7 +4,7 @@ go 1.22.0
 toolchain go1.24.1
 
 require (
-	github.com/adrg/xdg v0.4.0
+	github.com/adrg/xdg v0.5.3
 	github.com/etherlabsio/healthcheck/v2 v2.0.0
 	github.com/go-ldap/ldap/v3 v3.4.8
 	github.com/gorilla/mux v1.8.1
