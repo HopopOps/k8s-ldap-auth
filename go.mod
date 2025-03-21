@@ -4,13 +4,13 @@ go 1.22.0
 toolchain go1.24.1
 
 require (
-	github.com/adrg/xdg v0.4.0
+	github.com/adrg/xdg v0.5.3
 	github.com/etherlabsio/healthcheck/v2 v2.0.0
-	github.com/go-ldap/ldap/v3 v3.4.8
+	github.com/go-ldap/ldap/v3 v3.4.10
 	github.com/gorilla/mux v1.8.1
-	github.com/lestrrat-go/jwx v1.2.29
+	github.com/lestrrat-go/jwx v1.2.30
 	github.com/mattn/go-isatty v0.0.20
-	github.com/rs/zerolog v1.32.0
+	github.com/rs/zerolog v1.33.0
 	github.com/urfave/cli/v2 v2.27.6
 	github.com/zalando/go-keyring v0.2.6
 	golang.org/x/term v0.30.0
@@ -24,11 +24,11 @@ require (
 	github.com/Azure/go-ntlmssp v0.0.0-20221128193559-754e69321358 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.5 // indirect
 	github.com/danieljoos/wincred v1.2.2 // indirect
-	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.2.0 // indirect
+	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.3.0 // indirect
 	github.com/fxamacker/cbor/v2 v2.7.0 // indirect
-	github.com/go-asn1-ber/asn1-ber v1.5.5 // indirect
+	github.com/go-asn1-ber/asn1-ber v1.5.7 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
-	github.com/goccy/go-json v0.10.2 // indirect
+	github.com/goccy/go-json v0.10.3 // indirect
 	github.com/godbus/dbus/v5 v5.1.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/google/gofuzz v1.2.0 // indirect
