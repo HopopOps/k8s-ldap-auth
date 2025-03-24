@@ -10,7 +10,7 @@ require (
 	github.com/gorilla/mux v1.8.1
 	github.com/lestrrat-go/jwx v1.2.30
 	github.com/mattn/go-isatty v0.0.20
-	github.com/rs/zerolog v1.33.0
+	github.com/rs/zerolog v1.34.0
 	github.com/urfave/cli/v2 v2.27.6
 	github.com/zalando/go-keyring v0.2.6
 	golang.org/x/term v0.30.0
