@@ -1,6 +1,7 @@
 module k8s-ldap-auth
 
-go 1.22.0
+go 1.24.0
+
 toolchain go1.24.1
 
 require (
@@ -14,8 +15,8 @@ require (
 	github.com/urfave/cli/v2 v2.27.6
 	github.com/zalando/go-keyring v0.2.6
 	golang.org/x/term v0.32.0
-	k8s.io/api v0.33.0
-	k8s.io/apimachinery v0.33.0
+	k8s.io/api v0.33.1
+	k8s.io/apimachinery v0.33.1
 	k8s.io/client-go v0.33.0
 )
 
