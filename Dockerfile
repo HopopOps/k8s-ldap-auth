@@ -1,4 +1,4 @@
-FROM golang:1.24.4-alpine AS build
+FROM golang:1.25.0-alpine AS build
 # TODO: dynamically get this value
 ENV GOVERSION=1.21.4
 
