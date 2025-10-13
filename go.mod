@@ -14,7 +14,7 @@ require (
 	github.com/rs/zerolog v1.34.0
 	github.com/urfave/cli/v2 v2.27.7
 	github.com/zalando/go-keyring v0.2.6
-	golang.org/x/term v0.35.0
+	golang.org/x/term v0.36.0
 	k8s.io/api v0.34.1
 	k8s.io/apimachinery v0.34.1
 	k8s.io/client-go v0.34.1
@@ -50,7 +50,7 @@ require (
 	go.yaml.in/yaml/v2 v2.4.2 // indirect
 	golang.org/x/crypto v0.36.0 // indirect
 	golang.org/x/net v0.38.0 // indirect
-	golang.org/x/sys v0.36.0 // indirect
+	golang.org/x/sys v0.37.0 // indirect
 	golang.org/x/text v0.23.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	k8s.io/klog/v2 v2.130.1 // indirect
